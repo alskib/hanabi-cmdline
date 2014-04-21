@@ -81,6 +81,17 @@ public class DeckDraw implements Deck {
 		return this.cardCount;
 	}
 	
+	public boolean isEmpty() {
+		if (this.cardCount == 0)
+			return true;
+		return false;
+	}
+	
+	public boolean isFull() {
+		if (this.cardCount == this.deckSize)
+			return true;
+		return false;
+	}
 	
 	
 

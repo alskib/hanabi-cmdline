@@ -5,9 +5,10 @@ public class Player {
 	private String name;
 	private String email;
 	private String fbName;
+	private Card[] hand;
 	
-	public Player() {
-		
+	public Player(int size) {
+		hand = new Card[size];
 	}
 	
 	public void setID(int id) {
