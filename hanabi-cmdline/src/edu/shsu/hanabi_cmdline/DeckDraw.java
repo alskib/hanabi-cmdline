@@ -1,5 +1,7 @@
 package edu.shsu.hanabi_cmdline;
 
+import java.util.Random;
+
 public class DeckDraw implements Deck {
 	private Card[] cards;
 	private int cardCount;
@@ -10,6 +12,7 @@ public class DeckDraw implements Deck {
 		this.cardCount = 0;
 		this.deckSize = size;
 		initializeDeck();
+		shuffleDeck(this.cards);
 	}
 	
 	public void initializeDeck() {
@@ -44,11 +47,22 @@ public class DeckDraw implements Deck {
 		this.cards[cardCount++] = new Card(5, color);
 	}
 	
+	private void shuffleDeck(Card[] d) {
+		int n = deckSize;
+		Random rand = new Random();
+		rand.nextInt();
+		for (int i = 0; i < n; i++) {
+			int change = i + rand.nextInt(n-i);
+			Card temp = d[i];
+			d[i] = d[change];
+			d[change] = temp;
+		}
+	}
+	
 	public void iterateDeck() {
 		for (int i = 0; i < cardCount; i++) {
 			System.out.println(this.cards[i].getNumber() + " " +
 							   this.cards[i].getColor());
-			
 		}
 	}
 	
@@ -58,7 +72,7 @@ public class DeckDraw implements Deck {
 	}
 	
 	public Card pop() {
-		Card c = cards[cardCount];
+		Card c = cards[cardCount-1];
 		cardCount--;
 		return c;
 	}
