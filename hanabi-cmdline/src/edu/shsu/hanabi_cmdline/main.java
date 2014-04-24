@@ -16,10 +16,11 @@ public class main {
 		columns.put("some", "2");
 		
 		db.connect();
-		db.createTable("One", columns);
-		db.insert("whatever", values);
-		db.update("update", columns, columns);
-		db.select("something", values, columns);
+		//db.createTable("One", columns);
+		//db.insert("whatever", columns);
+		//db.update("update", columns, columns);
+		//db.select("something", values, columns);
+		db.dropTable("One");
 		db.close();
 	}
 	

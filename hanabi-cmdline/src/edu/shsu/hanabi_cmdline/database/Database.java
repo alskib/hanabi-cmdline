@@ -7,27 +7,43 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
+/**
+ * This class contains functions that will communicate with a database
+ * @author Johnny Nguyen jtn005@shsu.edu
+ * @version 1.0
+ * @since 23 Apr 2014
+ */
 public class Database {
 	
 	private Connection connect;
 	private String dbname;
 	private ResultSet resultSet;
 	
+	/**
+	 * Constructor
+	 * @param name database name to be connected to
+	 */
 	public Database(String name){
 		setDBName(name);
 	}
 
+	/**
+	 * This function sets the name of the database
+	 * @param name The name of the database
+	 */
 	private void setDBName(String name) {
 		this.dbname = name.substring(0, name.length() - 3);
 		System.out.println("Database name = " + this.dbname);
 	}
 	
+	/**
+	 * This function connects to this database object
+	 */
 	public void connect(){
 		this.connect = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
-			this.connect = DriverManager.getConnection("jdbc:sqlite:" + this.getName());
+			this.connect = DriverManager.getConnection("jdbc:sqlite:" + this.getName() + ".db");
 		} catch (ClassNotFoundException | SQLException e) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 			System.exit(0);
@@ -35,6 +51,9 @@ public class Database {
 		System.out.println("Opened database successfully");
 	}
 	
+	/**
+	 * This function closes the connection to this database object
+	 */
 	public void close(){
 		try {
 			this.connect.close();
@@ -42,8 +61,14 @@ public class Database {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 			System.exit(0);
 		}
+		System.out.println("Closed database successfully");
 	}
 	
+	/**
+	 * This function creates a table in this database
+	 * @param table The name of the table to be created
+	 * @param columns A Linked Hashmap of fields and datatype [Field, Datatype]
+	 */
 	public void createTable(String table, LinkedHashMap<String, String> columns){
 		StringBuffer sb = new StringBuffer();
 		String query;
@@ -57,20 +82,29 @@ public class Database {
 		this.execute(query);
 	}
 	
-	public void insert(String table, String[] values){
+	/**
+	 * This function creates a SQL Insertion statement and executes. This function is limited to only
+	 * one record insertion.
+	 * @param table The table to in data into
+	 * @param values
+	 */
+	public void insert(String table, LinkedHashMap<String, String> values){
 		StringBuffer sb = new StringBuffer();
+		StringBuffer val = new StringBuffer();
 		String query;
-		sb.append("INSERT INTO " + table + " VALUES(");
-		for(int i = 0; i < values.length; i++){
-			String v = values[i];
-			if(!this.isInteger(values[i]))
-				sb.append("'" + v + "',");
-			else
-				sb.append(v + ",");
-				
+		sb.append("INSERT INTO " + table + "(");
+		val.append(" VALUES(");
+		for(Map.Entry<String, String> entry : values.entrySet()){
+			String key = entry.getKey();
+			String v = entry.getValue();
+			sb.append(key + ",");
+			val.append(v + ",");
 		}
-		query = sb.replace(sb.lastIndexOf(","), sb.lastIndexOf(",") + 1, ")").toString();
-		this.execute(query);
+		sb = sb.replace(sb.lastIndexOf(","), sb.lastIndexOf(",") + 1, ")");
+		val = val.replace(val.lastIndexOf(","), val.lastIndexOf(",") + 1, ")");
+		query = sb.toString() + val.toString();
+		System.out.println(query);
+		//this.execute(query);
 	}
 	
 	public void update(String table, LinkedHashMap<String, String> setValue, LinkedHashMap<String, String> where){
@@ -141,7 +175,6 @@ public class Database {
 		Statement statement;
 		try {
 			statement = this.connect.createStatement();
-			System.out.println(query.substring(0, 7));
 			if(query.substring(0, 6).equals("SELECT")){
 				ResultSet rs = statement.executeQuery(query);
 				this.resultSet = rs;
