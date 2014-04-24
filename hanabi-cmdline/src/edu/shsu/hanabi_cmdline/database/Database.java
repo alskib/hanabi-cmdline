@@ -2,6 +2,7 @@ package edu.shsu.hanabi_cmdline.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedHashMap;
@@ -11,6 +12,7 @@ public class Database {
 	
 	private Connection connect;
 	private String dbname;
+	private ResultSet resultSet;
 	
 	public Database(String name){
 		setDBName(name);
@@ -52,8 +54,7 @@ public class Database {
 			sb.append(key + " " + value + ",");			
 		}
 		query = sb.replace(sb.lastIndexOf(","), sb.lastIndexOf(",") + 1, ")").toString();
-		//this.execute(query);
-		System.out.println(query);
+		this.execute(query);
 	}
 	
 	public void insert(String table, String[] values){
@@ -69,8 +70,7 @@ public class Database {
 				
 		}
 		query = sb.replace(sb.lastIndexOf(","), sb.lastIndexOf(",") + 1, ")").toString();
-		//this.execute(query);
-		System.out.println(query);
+		this.execute(query);
 	}
 	
 	public void update(String table, LinkedHashMap<String, String> setValue, LinkedHashMap<String, String> where){
@@ -96,8 +96,7 @@ public class Database {
 				sb.append(key + "=" + value + ",");
 		}
 		query = sb.replace(sb.lastIndexOf(","), sb.lastIndexOf(",") + 1, "").toString();
-		//this.execute(query);
-		System.out.println(query);
+		this.execute(query);
 	}
 	
 	public void select(String table, String[] fields, LinkedHashMap<String, String> where){
@@ -109,24 +108,47 @@ public class Database {
 			sb.append(v + ",");
 		}
 		sb = sb.replace(sb.lastIndexOf(","), sb.lastIndexOf(",") + 1, " ");
-		sb.append("FROM " + table + " WHERE ");
-		for(Map.Entry<String, String> entry : where.entrySet()){
-			String key = entry.getKey();
-			String value = entry.getValue();
-			if(!this.isInteger(value))
-				sb.append(key + "='" + value + "',");
-			else
-				sb.append(key + "=" + value + ",");
+		sb.append("FROM " + table);
+		if(null != where){
+			sb.append(" WHERE ");
+			for(Map.Entry<String, String> entry : where.entrySet()){
+				String key = entry.getKey();
+				String value = entry.getValue();
+				if(!this.isInteger(value))
+					sb.append(key + "='" + value + "',");
+				else
+					sb.append(key + "=" + value + ",");
+			}
+			sb = sb.replace(sb.lastIndexOf(","), sb.lastIndexOf(",") + 1, "");
 		}
-		query = sb.replace(sb.lastIndexOf(","), sb.lastIndexOf(",") + 1, "").toString();
-		System.out.println(query);
+		query = sb.toString();
+		this.execute(query);
+	}
+	
+	public ResultSet getResultSet() {
+		return this.resultSet;
+	}
+
+	public void dropTable(String table){
+		StringBuffer sb = new StringBuffer();
+		String query;
+		sb.append("DROP TABLE " + table);
+		query = sb.toString();
+		this.execute(query);
 	}
 	
 	private void execute(String query){
 		Statement statement;
 		try {
 			statement = this.connect.createStatement();
-			statement.executeUpdate(query);
+			System.out.println(query.substring(0, 7));
+			if(query.substring(0, 6).equals("SELECT")){
+				ResultSet rs = statement.executeQuery(query);
+				this.resultSet = rs;
+			}
+			else{
+				statement.executeUpdate(query);
+			}
 		} catch (SQLException e) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 			System.exit(0);
@@ -146,6 +168,4 @@ public class Database {
 	public String getName() {
 		return this.dbname;
 	}
-	
-
 }
