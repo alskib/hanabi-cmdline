@@ -35,7 +35,7 @@ public class Board {
 		System.out.print("Green: "); 	this.playedDeckGreen.iterateDeck(); 	System.out.println("");
 		System.out.print("Red: "); 		this.playedDeckRed.iterateDeck(); 		System.out.println("");
 		System.out.print("White: "); 	this.playedDeckWhite.iterateDeck(); 	System.out.println("");
-		System.out.print("Yellow: ");	this.playedDeckYellow.iterateDeck(); 	System.out.println("")
+		System.out.print("Yellow: ");	this.playedDeckYellow.iterateDeck(); 	System.out.println("");
 	}
 	
 }

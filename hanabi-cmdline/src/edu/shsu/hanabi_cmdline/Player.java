@@ -11,6 +11,15 @@ public class Player {
 		hand = new Card[size];
 	}
 	
+	public void insertCard(int pos) {
+		
+	}
+	
+	public Card removeCard(int pos) {
+		
+		return null;
+	}
+	
 	public void setID(int id) {
 		this.id = id;
 	}
