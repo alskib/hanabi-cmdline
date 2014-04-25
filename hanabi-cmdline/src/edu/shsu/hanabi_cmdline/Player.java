@@ -7,51 +7,23 @@ public class Player {
 	private String name;
 	private String email;
 	private String fbName;
-	private Card[] hand;
+	private DeckPlayer hand;
+	Scanner sc = new Scanner(System.in); 
 	
 	public Player(int size) {
-		hand = new Card[size];
+		hand = new DeckPlayer(size);
 	}
 	
-	public void actionMenu() {
-		int answer;
-		Scanner sc = new Scanner(System.in);
-		do {
-			System.out.println("1. Give information to another player");
-			System.out.println("2. Discard a card");
-			System.out.println("3. Play a card");
-			System.out.print("What do you want to do? ");
-			answer = sc.nextInt();
-			if (answer != 1 || answer != 2 || answer != 3)
-				System.out.println("Please enter 1, 2, or 3.");
-		} while (answer < 0 || answer > 3);
+	public void insertCard(Card c) {
+		this.hand.push(c);
+	}
+	
+	
+	public void discardCard() {
+		System.out.print("Which card would you like to discard (1-5)? ");
+		int answer = sc.nextInt();
+		this.hand.removeCard(answer-1);	//	removeCard uses 0-based indexing (maybe change this later)
 		
-	}
-	
-	public void insertCard(Card card) {
-		hand[hand.length-1] = card;	//	Insert card to end of hand.
-	}
-	
-	public Card removeCard(int pos) {
-		Card temp = hand[pos];
-		for (int i = pos; i < hand.length; i++) {	//	Fill in gap from removed card
-			hand[i] = hand[i+1];
-		}
-		return temp;
-	}
-	
-	//	Get number as info
-	public void getInfo(int num, int[] pos) {
-		for (int i = 0; i < pos.length; i++) {
-			System.out.println("Card in position " + pos[i] + "is of number " + num);
-		}
-	}
-	
-	// Get color as info
-	public void getInfo(String color, int[] pos) {
-		for (int i = 0; i < pos.length; i++) {
-			System.out.println("Card in position " + pos[i] + "is of color " + color);
-		}
 	}
 	
 	public void gatherInfoToTell() {
