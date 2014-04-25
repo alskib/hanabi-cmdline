@@ -104,7 +104,7 @@ public class Database {
 		val = val.replace(val.lastIndexOf(","), val.lastIndexOf(",") + 1, ")");
 		query = sb.toString() + val.toString();
 		System.out.println(query);
-		//this.execute(query);
+		this.execute(query);
 	}
 	
 	public void update(String table, LinkedHashMap<String, String> setValue, LinkedHashMap<String, String> where){
