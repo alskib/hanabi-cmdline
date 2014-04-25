@@ -6,7 +6,7 @@ public class Board {
 	DeckPlayed playedDeckBlue, playedDeckGreen, playedDeckRed, playedDeckWhite, playedDeckYellow;
 	DeckDiscard discardDeckBlue, discardDeckGreen, discardDeckRed, discardDeckWhite, discardDeckYellow;
 	
-	public Board (int size) {
+	public Board (int playerNum) {
 		DeckDraw drawDeck = 		new DeckDraw(50);
 		this.playedDeckBlue = 		new DeckPlayed(5, "blue");
 		this.playedDeckGreen = 		new DeckPlayed(5, "green");
@@ -37,5 +37,19 @@ public class Board {
 		System.out.print("White: "); 	this.playedDeckWhite.iterateDeck(); 	System.out.println("");
 		System.out.print("Yellow: ");	this.playedDeckYellow.iterateDeck(); 	System.out.println("");
 	}
+	
+	public int getClockTokens() {
+		return this.clockTokens;
+	}
+	
+	public int getFuseTokens() {
+		return this.fuseTokens;
+	}
+	
+	public void incClockTokens() {
+		if (this.clockTokens <= 8)
+			this.clockTokens++;
+	}
+	
 	
 }
