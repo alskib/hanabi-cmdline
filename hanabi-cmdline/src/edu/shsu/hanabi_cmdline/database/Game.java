@@ -3,20 +3,18 @@ package edu.shsu.hanabi_cmdline.database;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
+import java.util.Random;
 
 public class Game {
 
 	private int numPlayers, maxPlayers, finalScore, gameAdmin, id;
 	private boolean pvtGame;
-	private String dt, table, password;
+	private String dt, table, password, name;
 	private Database database;
 	private ResultSet resultSet;
 	
-	public Game(Database dbName, int gameAdmin){
+	public Game(Database dbName){
 		setDatabase(dbName);
-		setGameAdmin(gameAdmin);
-		setTable();
-		setGameData();
 	}
 	
 	private void setDatabase(Database dbName){
@@ -29,17 +27,19 @@ public class Game {
 	
 	private void setTable(){
 		this.table = "Game";
+
+	}
+	
+	private void setGameData(){
 		String[] fields = {"*"};
 		LinkedHashMap<String, String> where = new LinkedHashMap<String, String>();
 		where.put("gameAdmin", Integer.toString(this.gameAdmin));
 		where.put("current", "1");
 		this.database.select(this.table, fields, where);
-		this.resultSet = this.database.getResultSet();
-	}
-	
-	private void setGameData(){
+		this.resultSet = this.database.getResultSet();		
 		try {
 			while(this.resultSet.next()){
+				this.gameAdmin = this.resultSet.getInt("gameAdmin");
 				this.numPlayers = this.resultSet.getInt("numPlayers");
 				this.maxPlayers = this.resultSet.getInt("maxPlayers");
 				this.id = this.resultSet.getInt("id");
@@ -53,6 +53,24 @@ public class Game {
 	}
 	
 	public void insertGameData(LinkedHashMap<String, String> values){
+		Random idnumber = new Random();
+		String[] fields= {"*"};
+		boolean test = true;
+		while(test){
+			int rand = idnumber.nextInt(100000);
+			LinkedHashMap<String, String> where = new LinkedHashMap<String, String>();
+			where.put("id", Integer.toString(rand));
+			this.database.select(this.table, fields, where);
+			try {
+				if(!this.database.getResultSet().next()){
+					test = false;
+				}
+				values.put("id", Integer.toString(rand));
+			} catch (SQLException e) {
+				System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+				System.exit(0);
+			}
+		}
 		this.database.insert(this.table, values);
 	}
 	
