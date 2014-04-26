@@ -5,41 +5,44 @@ import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Random;
 
-public class Game {
+public class TableGame {
 
-	private int numPlayers, maxPlayers, finalScore, gameAdmin, id;
+	private int numPlayers, maxPlayers, finalScore, id;
 	private boolean pvtGame;
 	private String dt, table, password, name;
 	private Database database;
 	private ResultSet resultSet;
+	private Player admin;
 	
-	public Game(Database dbName){
+	public TableGame(Database dbName, LinkedHashMap<String, String> gameInfo){
 		setDatabase(dbName);
+		setAdmin(admin);
+		setTable();
+		insertGameInfo(gameInfo);
+		setGameInfo(admin.getID());
 	}
 	
 	private void setDatabase(Database dbName){
 		this.database = dbName;
 	}
 	
-	private void setGameAdmin(int gameAdmin){
-		this.gameAdmin = gameAdmin;
+	private void setAdmin(Player admin){
+		this.admin = admin;
 	}
 	
 	private void setTable(){
 		this.table = "Game";
-
 	}
 	
-	private void setGameData(){
+	private void setGameInfo(int adminID){
 		String[] fields = {"*"};
 		LinkedHashMap<String, String> where = new LinkedHashMap<String, String>();
-		where.put("gameAdmin", Integer.toString(this.gameAdmin));
+		where.put("gameAdmin", Integer.toString(adminID));
 		where.put("current", "1");
 		this.database.select(this.table, fields, where);
 		this.resultSet = this.database.getResultSet();		
 		try {
 			while(this.resultSet.next()){
-				this.gameAdmin = this.resultSet.getInt("gameAdmin");
 				this.numPlayers = this.resultSet.getInt("numPlayers");
 				this.maxPlayers = this.resultSet.getInt("maxPlayers");
 				this.id = this.resultSet.getInt("id");
@@ -52,7 +55,7 @@ public class Game {
 		}
 	}
 	
-	public void insertGameData(LinkedHashMap<String, String> values){
+	public void insertGameInfo(LinkedHashMap<String, String> values){
 		Random idnumber = new Random();
 		String[] fields= {"*"};
 		boolean test = true;
@@ -91,7 +94,7 @@ public class Game {
 	}
 	
 	public int getGameAdmin(){
-		return this.gameAdmin;
+		return this.admin.getID();
 	}
 	
 	public String getPassword(){

@@ -3,6 +3,7 @@ package edu.shsu.hanabi_cmdline;
 import java.util.LinkedHashMap;
 
 import edu.shsu.hanabi_cmdline.database.Database;
+import edu.shsu.hanabi_cmdline.database.TableGame;
 
 public class main {
 
@@ -26,8 +27,8 @@ public class main {
 		db.close();
 	}
 		
-	public static void createTempTable(Database db, String admin, int gameID){
-		String name = admin + Integer.toString(gameID);
+	public static void createTempTable(Database db, TableGame game){
+		String name = Integer.toString(game.getID()) + Integer.toString(game.getGameAdmin());
 		LinkedHashMap<String, String> columns = new LinkedHashMap<String, String>();
 		
 		columns.put("turn", "INTEGER");
