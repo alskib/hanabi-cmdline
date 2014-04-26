@@ -54,13 +54,14 @@ public class DeckPlayer implements Deck {
 		return temp;
 	}
 	
-	public void iterateDeck() {
+	public void iterateDeck(String name) {
 		if (isEmpty())
 			return;
-		System.out.println("Your hand consists of: ");
+		System.out.println(name + "'s hand consists of: ");
 		for (int i = 0; i < cardCount; i++) {
 			System.out.print(this.hand[i].getNumber() + " ");
 		}
+		System.out.println("");
 	}
 	
 //	Get number as info

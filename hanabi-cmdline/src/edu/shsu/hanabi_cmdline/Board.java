@@ -9,15 +9,24 @@ public class Board {
 	private DeckPlayed playedDeckBlue, playedDeckGreen, playedDeckRed, playedDeckWhite, playedDeckYellow;
 	private DeckDiscard discardDeckBlue, discardDeckGreen, discardDeckRed, discardDeckWhite, discardDeckYellow;
 	private Player P1, P2, P3, P4, P5, currentPlayer;
+	private Tokens tokens;
 	private int currentPlayerTurn;
 	private int numPlayers;
 	
 	public Board (int playerNum) {
 		this.numPlayers = playerNum;	//	numPlayers needed by other methods
 		initializeDecks();
-		initializePlayers(playerNum);
-		Tokens tokens = new Tokens();
+		initializePlayers(this.numPlayers);
+		this.tokens = new Tokens();
 		
+		// Start of first turn.
+		this.currentPlayer = this.P1;
+		do {
+
+			actionMenu(this.currentPlayer);
+
+
+		} while (true);
 		
 		
 		
@@ -31,27 +40,31 @@ public class Board {
 		}
 		Stack<Player> playerStack = new Stack<Player>();
 		
-		Player P1 = new Player(playerHandSize);
+		Player P1 = new Player("Amy", playerHandSize);
 		playerStack.push(P1);
-		Player P2 = new Player(playerHandSize);
+		Player P2 = new Player("Bob", playerHandSize);
 		playerStack.push(P2);
 		if (playerNum > 4) {
-			Player P5 = new Player(playerHandSize);
-			playerStack.push(P5);	//	Order players are pushed doesn't matter, actually.
+			Player P5 = new Player("Xin", playerHandSize);
+			playerStack.push(P5);	//	The order players are pushed doesn't actually matter.
 		}
 		if (playerNum > 3) {
-			Player P4 = new Player(playerHandSize);
+			Player P4 = new Player("Johnny", playerHandSize);
 			playerStack.push(P4);
 		}
 		if (playerNum > 2) {
-			Player P3 = new Player(playerHandSize);
+			Player P3 = new Player("Franklin", playerHandSize);
 			playerStack.push(P3);
 		}
-		while (playerStack.isEmpty() == false) {	//	Populate hand with new cards.
+		Stack<Player> iterationPlayerStack = (Stack<Player>)playerStack.clone();
+		while (playerStack.isEmpty() == false) {	//	Populate players' hands with new cards.
 			Player tempPlayer = playerStack.pop();
 			for (int i = 0; i < playerHandSize; i++) {
 				tempPlayer.insertCard(this.drawDeck.pop());
 			}
+		}
+		while (iterationPlayerStack.isEmpty() == false) {	//	Test to see if players' hands have
+			iterationPlayerStack.pop().iterateDeck();		//		populated correctly.
 		}
 		
 	}
@@ -88,9 +101,10 @@ public class Board {
 		System.out.print("Yellow: ");	this.playedDeckYellow.iterateDeck(); 	System.out.println("");
 	}
 	
-	public void actionMenu() {
+	public void actionMenu(Player p) {
 		int answer;
 		do {
+			
 			System.out.println("1. Give information to another player");
 			System.out.println("2. Discard a card");
 			System.out.println("3. Play a card");
@@ -103,14 +117,39 @@ public class Board {
 				System.out.println("Please enter 1, 2, 3, or 4.");
 		} while (answer < 0 || answer > 3);
 		if (answer == 1) {
-			// give info
-		} else if (answer == 2) {
-			// discard card
-			this.currentPlayer.discardCard();
-				
+			//	give info
+			//	have player select card(s) to choose, and type of info to choose
+			//	put into list, have it shown at beginning of that player's turn
+			//	it will be a list per person, with a list on each line
 			
+		} else if (answer == 2) {
+			//	discard card
+			p.discardCard();
+			this.tokens.incClockTokens();
+			p.insertCard(this.drawDeck.pop());
 		} else {
-			// play card
+			//	play card
+			//	if playCard() false, return false for actionMenu()
+			//		which will then return for the Board game object,
+			//		quitting the game?
+			Card toBePlayed = p.playCard();
+			DeckPlayed tempDeck = this.playedDeckBlue;
+			if (toBePlayed.getColor().equals("green")) {
+				tempDeck = this.playedDeckGreen;
+			} else if (toBePlayed.getColor().equals("red")) {
+				tempDeck = this.playedDeckRed;
+			} else if (toBePlayed.getColor().equals("white")) {
+				tempDeck = this.playedDeckWhite;
+			} else if (toBePlayed.getColor().equals("yellow")) {
+				tempDeck = this.playedDeckYellow;
+			}
+			if (tempDeck.insertIntoPlayed(toBePlayed)){
+				System.out.println("A " + toBePlayed.getColor() + " " + toBePlayed.getNumber() +
+								   " successfully added to the fireworks!");
+			} else {
+				System.out.println("Incorrect card played!");
+				this.tokens.decFuseTokens();
+			}
 		}
 	}
 	

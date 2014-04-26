@@ -10,7 +10,8 @@ public class Player {
 	private DeckPlayer hand;
 	Scanner sc = new Scanner(System.in); 
 	
-	public Player(int size) {
+	public Player(String name, int size) {
+		this.name = name;
 		hand = new DeckPlayer(size);
 	}
 	
@@ -23,7 +24,16 @@ public class Player {
 		System.out.print("Which card would you like to discard (1-5)? ");
 		int answer = sc.nextInt();
 		this.hand.removeCard(answer-1);	//	removeCard uses 0-based indexing (maybe change this later)
-		
+	}
+	
+	public Card playCard() {
+		System.out.print("Which card would you like to play (1-5)? ");
+		int answer = sc.nextInt();
+		return this.hand.removeCard(answer-1);
+	}
+	
+	public void iterateDeck() {	//	For testing whether players' hands have populated correctly.
+		this.hand.iterateDeck(this.name);
 	}
 	
 	public void gatherInfoToTell() {

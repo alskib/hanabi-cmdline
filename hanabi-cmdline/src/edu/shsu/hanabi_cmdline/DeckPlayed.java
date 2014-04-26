@@ -45,4 +45,26 @@ public class DeckPlayed implements Deck {
 			return true;
 		return false;
 	}
+	
+	public boolean insertIntoPlayed(Card c) {
+		//	Since the played deck can only be built in a specific order (1 to 5),
+		//		if the player is attempting to play a 3, I only have to test if
+		//		position cards[1] contains a card of number 2.
+		//	Insert 1 - test if empty and card.getNumber() == 1
+		//	Insert 2 - test cards[0].getNumber() == 1
+		//	Insert 3 - test cards[1].getNumber() == 2
+		//	etc.
+		int cardNumber = c.getNumber();
+		if (isFull())	//	Full deck, so no more cards of this color can be played
+			return false;
+		if (cardNumber == 1 && isEmpty()) {
+			push(c);
+			return true;
+		}
+		if (this.cards[cardNumber-2].getNumber() == cardNumber-1) {
+			push(c);
+			return true;
+		}
+		return false;
+	}
 }
