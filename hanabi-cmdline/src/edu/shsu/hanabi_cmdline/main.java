@@ -17,7 +17,7 @@ public class main {
 		
 		db.connect();
 		
-		Board b = new Board(5);
+		Board b = new Board(2);
 		//db.createTable("One", columns);
 		//db.insert("whatever", columns);
 		//db.update("update", columns, columns);

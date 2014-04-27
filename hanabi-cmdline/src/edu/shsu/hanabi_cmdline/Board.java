@@ -1,5 +1,6 @@
 package edu.shsu.hanabi_cmdline;
 
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -9,22 +10,24 @@ public class Board {
 	private DeckPlayed playedDeckBlue, playedDeckGreen, playedDeckRed, playedDeckWhite, playedDeckYellow;
 	private DeckDiscard discardDeckBlue, discardDeckGreen, discardDeckRed, discardDeckWhite, discardDeckYellow;
 	private Player P1, P2, P3, P4, P5, currentPlayer;
+	private Player[] playerArray;
 	private Tokens tokens;
 	private int currentPlayerTurn;
 	private int numPlayers;
 	
 	public Board (int playerNum) {
-		this.numPlayers = playerNum;	//	numPlayers needed by other methods
+		this.numPlayers = playerNum;	//	numPlayers needed by other methods (possibly)
 		initializeDecks();
 		initializePlayers(this.numPlayers);
 		this.tokens = new Tokens();
 		
 		// Start of first turn.
 		this.currentPlayer = this.P1;
+		this.currentPlayerTurn = 1;
 		do {
 
 			actionMenu(this.currentPlayer);
-
+			nextTurn();
 
 		} while (true);
 		
@@ -38,34 +41,40 @@ public class Board {
 		if (playerNum < 4) {
 			playerHandSize = 5;
 		}
-		Stack<Player> playerStack = new Stack<Player>();
+		this.playerArray = new Player[playerNum];
 		
-		Player P1 = new Player("Amy", playerHandSize);
-		playerStack.push(P1);
-		Player P2 = new Player("Bob", playerHandSize);
-		playerStack.push(P2);
+		this.P1 = new Player("Amy", playerHandSize);
+		this.playerArray[0] = this.P1;
+		
+		this.P2 = new Player("Bob", playerHandSize);
+		this.playerArray[1] = this.P2;
+		
 		if (playerNum > 4) {
-			Player P5 = new Player("Xin", playerHandSize);
-			playerStack.push(P5);	//	The order players are pushed doesn't actually matter.
+			this.P5 = new Player("Xin", playerHandSize);
+			this.playerArray[4] = this.P5;
 		}
 		if (playerNum > 3) {
-			Player P4 = new Player("Johnny", playerHandSize);
-			playerStack.push(P4);
+			this.P4 = new Player("Johnny", playerHandSize);
+			this.playerArray[3] = this.P4;
 		}
 		if (playerNum > 2) {
-			Player P3 = new Player("Franklin", playerHandSize);
-			playerStack.push(P3);
+			this.P3 = new Player("Franklin", playerHandSize);
+			this.playerArray[2] = this.P3;
 		}
-		Stack<Player> iterationPlayerStack = (Stack<Player>)playerStack.clone();
-		while (playerStack.isEmpty() == false) {	//	Populate players' hands with new cards.
-			Player tempPlayer = playerStack.pop();
-			for (int i = 0; i < playerHandSize; i++) {
-				tempPlayer.insertCard(this.drawDeck.pop());
+		
+		//	Populate new cards into player hands from drawDeck. 
+		for (int j = 0; j < this.playerArray.length; j++) {
+			for (int k = 0; k < playerHandSize; k++) {
+				this.playerArray[j].insertCard(this.drawDeck.pop());
 			}
 		}
-		while (iterationPlayerStack.isEmpty() == false) {	//	Test to see if players' hands have
-			iterationPlayerStack.pop().iterateDeck();		//		populated correctly.
+		
+		//	Test to see if players' hands populated correctly.
+		for (int i = 0; i < this.playerArray.length; i++) {
+			this.playerArray[i].iterateDeck();
 		}
+
+
 		
 	}
 	
@@ -105,16 +114,20 @@ public class Board {
 		int answer;
 		do {
 			
+			System.out.println("\nPlayer " + p.getName());
 			System.out.println("1. Give information to another player");
 			System.out.println("2. Discard a card");
 			System.out.println("3. Play a card");
 			System.out.println("4. Show discarded cards");
+			System.out.println("5. Display your cards");	//	Testing only
 			System.out.print("What do you want to do? ");
 			answer = sc.nextInt();
 			if (answer == 4)
 				showDiscard();
-			if (answer < 1 || answer > 4)
-				System.out.println("Please enter 1, 2, 3, or 4.");
+			if (answer == 5)
+				p.iterateDeck();
+			if (answer < 1 || answer > 5)
+				System.out.println("Please enter 1, 2, 3, 4, or 5.");
 		} while (answer < 0 || answer > 3);
 		if (answer == 1) {
 			//	give info
@@ -155,31 +168,43 @@ public class Board {
 	
 	private void nextTurn() {
 		if (this.currentPlayerTurn == 1) {	//	Minimum 2 players, so always change to P2.
-			this.currentPlayer = P2;	//	Change from P1 to P2
+			this.currentPlayer = this.P2;	//	Change from P1 to P2
+			this.currentPlayerTurn = 2;
+			return;
 		}
 		if (this.currentPlayerTurn == 2) {
 			if (this.numPlayers == 2) {		//	If 2 players, go back to P1. Otherwise, P3.
-				this.currentPlayer = P1;
+				this.currentPlayer = this.P1;
+				this.currentPlayerTurn = 1;
 				return;
 			}
-			this.currentPlayer = P3;
+			this.currentPlayer = this.P3;
+			this.currentPlayerTurn = 3;
+			return;
 		}
 		if (this.currentPlayerTurn == 3) { 
 			if (this.numPlayers == 3) {		//	If 3 players, go back to P1, Otherwise, P4.
-				this.currentPlayer = P1;
+				this.currentPlayer = this.P1;
+				this.currentPlayerTurn = 1;
 				return;
 			}
-			this.currentPlayer = P4;
+			this.currentPlayer = this.P4;
+			this.currentPlayerTurn = 4;
+			return;
 		}
 		if (this.currentPlayerTurn == 4) {
 			if (this.numPlayers == 4) {		//	If 4 players, go back to P1. Otherwise, P5.
-				this.currentPlayer = P1;
+				this.currentPlayer = this.P1;
+				this.currentPlayerTurn = 1;
 				return;
 			}
-			this.currentPlayer = P5;
+			this.currentPlayer = this.P5;
+			this.currentPlayerTurn = 5;
+			return;
 		}
 		if (this.currentPlayerTurn == 5) {	// 	Max 5 player game, have to go back to P1.
-			this.currentPlayer = P1;
+			this.currentPlayer = this.P1;
+			this.currentPlayerTurn = 1;
 		}
 	}
 }

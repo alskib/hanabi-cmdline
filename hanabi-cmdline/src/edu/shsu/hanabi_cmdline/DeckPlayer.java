@@ -47,7 +47,7 @@ public class DeckPlayer implements Deck {
 	
 	public Card removeCard(int pos) {
 		Card temp = hand[pos];
-		for (int i = pos; i < hand.length; i++) {	//	Fill in gap from removed card
+		for (int i = pos; i < hand.length-1; i++) {	//	Fill in gap from removed card
 			hand[i] = hand[i+1];
 		}
 		cardCount--;
@@ -59,7 +59,7 @@ public class DeckPlayer implements Deck {
 			return;
 		System.out.println(name + "'s hand consists of: ");
 		for (int i = 0; i < cardCount; i++) {
-			System.out.print(this.hand[i].getNumber() + " ");
+			System.out.print("[" + this.hand[i].getColor() + " " + this.hand[i].getNumber() + "] ");
 		}
 		System.out.println("");
 	}
