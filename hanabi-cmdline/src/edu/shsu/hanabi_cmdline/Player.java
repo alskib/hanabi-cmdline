@@ -24,19 +24,8 @@ public class Player {
 		int answer = sc.nextInt();
 		return this.hand.removeCard(answer-1);
 	}
-	public void discardCard() {
-		System.out.format("Which card would you like to discard (1-%d)? ", this.hand.getDeckSize());
-		int answer = sc.nextInt();
-		this.hand.removeCard(answer-1);	//	removeCard uses 0-based indexing (maybe change this later)
-	}
 	
-	public Card playCard() {
-		System.out.format("Which card would you like to play (1-%d)? ", this.hand.getDeckSize());
-		int answer = sc.nextInt();
-		return this.hand.removeCard(answer-1);
-	}
-	
-	public void iterateDeck() {	//	For testing whether players' hands have populated correctly.
+	public void iterateDeck() {
 		this.hand.iterateDeck(this.name);
 	}
 	

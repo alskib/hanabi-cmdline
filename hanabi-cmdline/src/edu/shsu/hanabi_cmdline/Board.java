@@ -9,6 +9,9 @@ public class Board {
 	private DeckDiscard[] deckDiscardArray;
 	private Player P1, P2, P3, P4, P5, currentPlayer;
 	private Player[] playerArray;
+	private String[] infoColorArray;
+	private Card[] infoCardsArray;
+	private int[] infoNumberArray;
 	private Tokens tokens;
 	private int currentPlayerTurn;
 	private int numPlayers;
@@ -105,10 +108,10 @@ public class Board {
 	}
 	
 	private void actionMenu(Player p) {
-		int answer;
+		int answer, infoAnswer;
 		Card tempCard;
 		boolean outOfClockTokens = false;
-		boolean continueLoop;
+		boolean continueLoop, infoLoop;
 		do {
 			continueLoop = false;
 			if (this.tokens.getClockTokens() == 0)
@@ -154,6 +157,61 @@ public class Board {
 			//	have player select card(s) to choose, and type of info to choose
 			//	put into list, have it shown at beginning of that player's turn
 			//	it will be a list per person, with a list on each line
+			do {
+				infoLoop = false;
+				
+				boolean found = false;
+				for (int i = 0; i < this.playerArray.length; i++) {
+					String name = this.playerArray[i].getName();
+					if (name.equals(p.getName())) {	//	Ignore printout for current player
+						found = true;
+						continue;
+					}
+					//	Keep numbering consistently 1 to numPlayers-1
+					if (found)
+						System.out.println(i + ". " + this.playerArray[i].getName());
+					else
+						System.out.println(i+1 + ". " + this.playerArray[i].getName());
+				}
+				System.out.print("To whom do you want to give information? ");
+				infoAnswer = sc.nextInt();
+				if (infoAnswer < 1 || infoAnswer > this.playerArray.length) {
+					System.out.format("Please enter a number from 1 to %d", this.numPlayers-1);
+					infoLoop = true;
+				}
+			} while (infoLoop);
+			
+			do {
+				//	currentPlayerTurn corresponds with the current player's actual
+				//		location in the playerArray
+				//	since infoAnswer is changed (from previous loop) depending on
+				//		current player's location in the playerArray, a comparison
+				//		with currentPlayerTurn is necessary to see if the above 
+				//		was really modified
+				if (infoAnswer < this.currentPlayerTurn) {
+					this.playerArray[infoAnswer-1].iterateDeck();
+				}
+				if (infoAnswer >= this.currentPlayerTurn) {
+					this.playerArray[infoAnswer].iterateDeck();
+				}
+				
+				System.out.println("Which card(s) to give info on? ");
+				
+				
+			} while (false);
+			
+			//	Show cards from person selected
+			
+			
+			//	Select cards from person
+			
+			
+			//	Number or color?
+			
+			
+			//	Error checking
+			
+			
 			this.tokens.decClockTokens();
 		} else if (answer == 2) {
 			//	discard card
