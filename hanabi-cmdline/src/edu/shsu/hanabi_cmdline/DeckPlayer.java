@@ -57,7 +57,7 @@ public class DeckPlayer implements Deck {
 	public void iterateDeck(String name) {
 		if (isEmpty())
 			return;
-		System.out.println(name + "'s hand consists of: ");
+		System.out.println(name + "'s hand: ");
 		for (int i = 0; i < cardCount; i++) {
 			System.out.print("[" + this.hand[i].getColor() + " " + this.hand[i].getNumber() + "] ");
 		}

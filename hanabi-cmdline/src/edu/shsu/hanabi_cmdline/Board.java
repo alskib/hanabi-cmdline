@@ -70,9 +70,9 @@ public class Board {
 		}
 		
 		//	Test to see if players' hands populated correctly.
-		for (int i = 0; i < this.playerArray.length; i++) {
-			this.playerArray[i].iterateDeck();
-		}
+//		for (int i = 0; i < this.playerArray.length; i++) {
+//			this.playerArray[i].iterateDeck();
+//		}
 
 
 		
@@ -113,7 +113,14 @@ public class Board {
 	public void actionMenu(Player p) {
 		int answer;
 		do {
-			
+			System.out.println("==============================");
+			for (int i = 0; i < this.playerArray.length; i++) {
+				//	Skip loop if i matches current player
+				if (i == this.currentPlayerTurn-1)
+					continue;
+				this.playerArray[i].iterateDeck();
+			}
+			System.out.println("==============================");
 			System.out.println("\nPlayer " + p.getName());
 			System.out.println("1. Give information to another player");
 			System.out.println("2. Discard a card");
