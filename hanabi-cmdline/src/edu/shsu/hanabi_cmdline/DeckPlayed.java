@@ -60,15 +60,17 @@ public class DeckPlayed implements DeckColored {
 		int cardNumber = c.getNumber();
 		if (isFull())	//	Full deck, so no more cards of this color can be played
 			return false;
-		if (cardNumber == 1) {	//	If card is 1, empty deck is success. Non-empty is failure.
-			if (isEmpty()) {
+		if (isEmpty()) {
+			if (cardNumber == 1) {
 				push(c);
 				return true;
-			} else {
-				return false;
 			}
+			return false;
+		} else {
+			if (cardNumber == 1)	//	If non-empty and number 1.
+				return false;
 		}
-		
+
 		if (this.cards[cardNumber-2].getNumber() == cardNumber-1) {
 			push(c);
 			return true;

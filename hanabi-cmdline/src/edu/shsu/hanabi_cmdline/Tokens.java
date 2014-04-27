@@ -5,7 +5,7 @@ public class Tokens {
 	private int fuseTokens;
 	
 	public Tokens() {
-		this.clockTokens = 8;
+		this.clockTokens = 1;
 		this.fuseTokens = 3;
 	}
 	
