@@ -1,6 +1,6 @@
 package edu.shsu.hanabi_cmdline;
 
-public class DeckDiscard implements Deck {
+public class DeckDiscard implements DeckColored {
 	private Card[] cards;
 	private String color;
 	private int cardCount;
@@ -11,15 +11,16 @@ public class DeckDiscard implements Deck {
 		this.color = c;
 		this.cardCount = 0;
 		this.deckSize = size;
-		
 	}
 	
 	public void iterateDeck() {
 		if (isEmpty())
 			return;
+		System.out.print(this.color + ": ");
 		for (int i = 0; i < cardCount; i++) {
 			System.out.print(this.cards[i].getNumber() + " ");
 		}
+		System.out.println("");
 	}
 	
 	public void push(Card c) {
@@ -31,7 +32,8 @@ public class DeckDiscard implements Deck {
 		return null;
 	}
 	
-	public void sort(Card[] deck) {
+	private void sort(Card[] deck) {
+		//	Insertion sort
 		for (int i = 1; i < cardCount; i++) {
 			Card temp = deck[i];
 			int j;

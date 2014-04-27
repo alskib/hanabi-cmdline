@@ -32,6 +32,10 @@ public class DeckPlayer implements Deck {
 		return false;
 	}
 	
+	public int getDeckSize() {
+		return this.deckSize;
+	}
+	
 	public void insertCard(Card card) {
 		hand[hand.length-1] = card;	//	Insert card to end of hand.
 	}
@@ -64,14 +68,14 @@ public class DeckPlayer implements Deck {
 		System.out.println("");
 	}
 	
-//	Get number as info
+	//	Get number as info
 	public void getInfo(int num, int[] pos) {
 		for (int i = 0; i < pos.length; i++) {
 			System.out.println("Card in position " + pos[i] + "is of number " + num);
 		}
 	}
 	
-	// Get color as info
+	//	Get color as info
 	public void getInfo(String color, int[] pos) {
 		for (int i = 0; i < pos.length; i++) {
 			System.out.println("Card in position " + pos[i] + "is of color " + color);

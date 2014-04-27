@@ -8,7 +8,9 @@ public class Board {
 	private Scanner sc = new Scanner(System.in);
 	private DeckDraw drawDeck;
 	private DeckPlayed playedDeckBlue, playedDeckGreen, playedDeckRed, playedDeckWhite, playedDeckYellow;
+	private DeckPlayed[] deckPlayedArray;
 	private DeckDiscard discardDeckBlue, discardDeckGreen, discardDeckRed, discardDeckWhite, discardDeckYellow;
+	private DeckDiscard[] deckDiscardArray;
 	private Player P1, P2, P3, P4, P5, currentPlayer;
 	private Player[] playerArray;
 	private Tokens tokens;
@@ -79,48 +81,64 @@ public class Board {
 	}
 	
 	private void initializeDecks() {
-		drawDeck = 					new DeckDraw(50);
-		this.playedDeckBlue = 		new DeckPlayed(5, "blue");
-		this.playedDeckGreen = 		new DeckPlayed(5, "green");
-		this.playedDeckRed = 		new DeckPlayed(5, "red");
-		this.playedDeckWhite = 		new DeckPlayed(5, "white");
-		this.playedDeckYellow = 	new DeckPlayed(5, "yellow");
-		this.discardDeckBlue = 		new DeckDiscard(10, "blue");
-		this.discardDeckGreen = 	new DeckDiscard(10, "green");
-		this.discardDeckRed =		new DeckDiscard(10, "red");
-		this.discardDeckWhite = 	new DeckDiscard(10, "white");
-		this.discardDeckYellow = 	new DeckDiscard(10, "yellow");
+		drawDeck = new DeckDraw(50);
+		this.deckPlayedArray = new DeckPlayed[5];
+		this.deckPlayedArray[0] = this.playedDeckBlue = 	new DeckPlayed(5, "blue");
+		this.deckPlayedArray[1] = this.playedDeckGreen = 	new DeckPlayed(5, "green");
+		this.deckPlayedArray[2] = this.playedDeckRed = 		new DeckPlayed(5, "red");
+		this.deckPlayedArray[3] = this.playedDeckWhite = 	new DeckPlayed(5, "white");
+		this.deckPlayedArray[4] = this.playedDeckYellow = 	new DeckPlayed(5, "yellow");
+		this.deckDiscardArray =	new DeckDiscard[5];
+		this.deckDiscardArray[0] = this.discardDeckBlue =	new DeckDiscard(10, "blue");
+		this.deckDiscardArray[1] = this.discardDeckGreen = 	new DeckDiscard(10, "green");
+		this.deckDiscardArray[2] = this.discardDeckRed =	new DeckDiscard(10, "red");
+		this.deckDiscardArray[3] = this.discardDeckWhite = 	new DeckDiscard(10, "white");
+		this.deckDiscardArray[4] = this.discardDeckYellow =	new DeckDiscard(10, "yellow");
 	}
 	
-	public void showDiscard() {
+	private void showDiscard() {
 		System.out.println("Discarded cards:");
-		System.out.print("Blue: "); 	this.discardDeckBlue.iterateDeck(); 	System.out.println("");
-		System.out.print("Green: "); 	this.discardDeckGreen.iterateDeck(); 	System.out.println("");
-		System.out.print("Red: "); 		this.discardDeckRed.iterateDeck(); 		System.out.println("");
-		System.out.print("White: "); 	this.discardDeckWhite.iterateDeck(); 	System.out.println("");
-		System.out.print("Yellow: ");	this.discardDeckYellow.iterateDeck(); 	System.out.println("");
+		for (int i = 0; i < this.deckDiscardArray.length; i++) {
+			this.deckDiscardArray[i].iterateDeck();
+		}
+//		System.out.print("Blue: "); 	this.discardDeckBlue.iterateDeck(); 	System.out.println("");
+//		System.out.print("Green: "); 	this.discardDeckGreen.iterateDeck(); 	System.out.println("");
+//		System.out.print("Red: "); 		this.discardDeckRed.iterateDeck(); 		System.out.println("");
+//		System.out.print("White: "); 	this.discardDeckWhite.iterateDeck(); 	System.out.println("");
+//		System.out.print("Yellow: ");	this.discardDeckYellow.iterateDeck(); 	System.out.println("");
 	}
 	
-	public void showPlayed() {
+	private void showPlayed() {
 		System.out.println("Played cards:");
-		System.out.print("Blue: "); 	this.playedDeckBlue.iterateDeck(); 		System.out.println("");
-		System.out.print("Green: "); 	this.playedDeckGreen.iterateDeck(); 	System.out.println("");
-		System.out.print("Red: "); 		this.playedDeckRed.iterateDeck(); 		System.out.println("");
-		System.out.print("White: "); 	this.playedDeckWhite.iterateDeck(); 	System.out.println("");
-		System.out.print("Yellow: ");	this.playedDeckYellow.iterateDeck(); 	System.out.println("");
+		for (int i = 0; i < this.deckPlayedArray.length; i++) {
+			this.deckPlayedArray[i].iterateDeck();
+		}
+//		System.out.print("Blue: "); 	this.playedDeckBlue.iterateDeck(); 		System.out.println("");
+//		System.out.print("Green: "); 	this.playedDeckGreen.iterateDeck(); 	System.out.println("");
+//		System.out.print("Red: "); 		this.playedDeckRed.iterateDeck(); 		System.out.println("");
+//		System.out.print("White: "); 	this.playedDeckWhite.iterateDeck(); 	System.out.println("");
+//		System.out.print("Yellow: ");	this.playedDeckYellow.iterateDeck(); 	System.out.println("");
 	}
 	
-	public void actionMenu(Player p) {
+	private void showTokens() {
+		System.out.format("Clock tokens: %d | Fuse tokens: %d\n", 
+						  this.tokens.getClockTokens(), this.tokens.getFuseTokens());
+	}
+	
+	private void actionMenu(Player p) {
 		int answer;
+		Card tempCard;
 		do {
 			System.out.println("==============================");
 			for (int i = 0; i < this.playerArray.length; i++) {
 				//	Skip loop if i matches current player
-				if (i == this.currentPlayerTurn-1)
-					continue;
+//				if (i == this.currentPlayerTurn-1)
+//					continue;
 				this.playerArray[i].iterateDeck();
 			}
 			System.out.println("==============================");
+			showTokens();
+			showPlayed();
 			System.out.println("\nPlayer " + p.getName());
 			System.out.println("1. Give information to another player");
 			System.out.println("2. Discard a card");
@@ -144,7 +162,9 @@ public class Board {
 			
 		} else if (answer == 2) {
 			//	discard card
-			p.discardCard();
+			tempCard = p.removeCard("discard");
+			DeckDiscard tempDeckD = (DeckDiscard)findDeckColored(this.deckDiscardArray, tempCard);
+			tempDeckD.push(tempCard);
 			this.tokens.incClockTokens();
 			p.insertCard(this.drawDeck.pop());
 		} else {
@@ -152,25 +172,31 @@ public class Board {
 			//	if playCard() false, return false for actionMenu()
 			//		which will then return for the Board game object,
 			//		quitting the game?
-			Card toBePlayed = p.playCard();
-			DeckPlayed tempDeck = this.playedDeckBlue;
-			if (toBePlayed.getColor().equals("green")) {
-				tempDeck = this.playedDeckGreen;
-			} else if (toBePlayed.getColor().equals("red")) {
-				tempDeck = this.playedDeckRed;
-			} else if (toBePlayed.getColor().equals("white")) {
-				tempDeck = this.playedDeckWhite;
-			} else if (toBePlayed.getColor().equals("yellow")) {
-				tempDeck = this.playedDeckYellow;
-			}
-			if (tempDeck.insertIntoPlayed(toBePlayed)){
-				System.out.println("A " + toBePlayed.getColor() + " " + toBePlayed.getNumber() +
+			tempCard = p.removeCard("play");
+			DeckPlayed tempDeckP = (DeckPlayed)findDeckColored(this.deckPlayedArray, tempCard);
+			
+			if (tempDeckP.insertIntoPlayed(tempCard)){
+				System.out.println("A " + tempCard.getColor() + " " + tempCard.getNumber() +
 								   " successfully added to the fireworks!");
+				//	Successful 5 card gets a clock token.
+				if (tempCard.getNumber() == 5)
+					this.tokens.incClockTokens();
 			} else {
 				System.out.println("Incorrect card played!");
 				this.tokens.decFuseTokens();
 			}
+			p.insertCard(this.drawDeck.pop());
 		}
+	}
+	
+	private DeckColored findDeckColored(DeckColored[] array, Card c) {
+		for(int i = 0; i < array.length; i++) {
+			//	Find deck color that matches card color and push card into deck.
+			if (array[i].getDeckColor().equals(c.getColor())){
+				return array[i];
+			}
+		}
+		return null;
 	}
 	
 	private void nextTurn() {

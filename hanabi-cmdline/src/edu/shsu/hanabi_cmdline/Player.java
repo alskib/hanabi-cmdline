@@ -19,15 +19,19 @@ public class Player {
 		this.hand.push(c);
 	}
 	
-	
+	public Card removeCard(String action) {
+		System.out.format("Which card would you like to %s (1-%d)? ", action, this.hand.getDeckSize());
+		int answer = sc.nextInt();
+		return this.hand.removeCard(answer-1);
+	}
 	public void discardCard() {
-		System.out.print("Which card would you like to discard (1-5)? ");
+		System.out.format("Which card would you like to discard (1-%d)? ", this.hand.getDeckSize());
 		int answer = sc.nextInt();
 		this.hand.removeCard(answer-1);	//	removeCard uses 0-based indexing (maybe change this later)
 	}
 	
 	public Card playCard() {
-		System.out.print("Which card would you like to play (1-5)? ");
+		System.out.format("Which card would you like to play (1-%d)? ", this.hand.getDeckSize());
 		int answer = sc.nextInt();
 		return this.hand.removeCard(answer-1);
 	}

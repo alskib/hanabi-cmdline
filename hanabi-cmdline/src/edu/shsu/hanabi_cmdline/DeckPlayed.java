@@ -1,6 +1,6 @@
 package edu.shsu.hanabi_cmdline;
 
-public class DeckPlayed implements Deck {
+public class DeckPlayed implements DeckColored {
 	private Card[] cards;
 	private String color;
 	private int cardCount;
@@ -17,9 +17,11 @@ public class DeckPlayed implements Deck {
 	public void iterateDeck() {
 		if (isEmpty())
 			return;
+		System.out.print(this.color + ": ");
 		for (int i = 0; i < cardCount; i++) {
 			System.out.print(this.cards[i].getNumber() + " ");
 		}
+		System.out.println("");
 	}
 	
 	public void push(Card c) {
@@ -47,6 +49,7 @@ public class DeckPlayed implements Deck {
 	}
 	
 	public boolean insertIntoPlayed(Card c) {
+//	public boolean push(Card c) {
 		//	Since the played deck can only be built in a specific order (1 to 5),
 		//		if the player is attempting to play a 3, I only have to test if
 		//		position cards[1] contains a card of number 2.
@@ -57,10 +60,15 @@ public class DeckPlayed implements Deck {
 		int cardNumber = c.getNumber();
 		if (isFull())	//	Full deck, so no more cards of this color can be played
 			return false;
-		if (cardNumber == 1 && isEmpty()) {
-			push(c);
-			return true;
+		if (cardNumber == 1) {	//	If card is 1, empty deck is success. Non-empty is failure.
+			if (isEmpty()) {
+				push(c);
+				return true;
+			} else {
+				return false;
+			}
 		}
+		
 		if (this.cards[cardNumber-2].getNumber() == cardNumber-1) {
 			push(c);
 			return true;
