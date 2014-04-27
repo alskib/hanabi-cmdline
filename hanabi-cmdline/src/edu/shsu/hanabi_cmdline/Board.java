@@ -92,17 +92,10 @@ public class Board {
 		this.deckDiscardArray[4] = new DeckDiscard(10, "yellow");
 	}
 	
-	private void showDiscard() {
-		System.out.println("Discarded cards:");
-		for (int i = 0; i < this.deckDiscardArray.length; i++) {
-			this.deckDiscardArray[i].iterateDeck();
-		}
-	}
-	
-	private void showPlayed() {
-		System.out.println("Played cards:");
-		for (int i = 0; i < this.deckPlayedArray.length; i++) {
-			this.deckPlayedArray[i].iterateDeck();
+	private void showDeckColored(DeckColored[] deck, String type) {
+		System.out.println(type + " cards: ");
+		for (int i = 0; i < deck.length; i++) {
+			deck[i].iterateDeck();
 		}
 	}
 	
@@ -132,7 +125,8 @@ public class Board {
 			}
 			System.out.println("==============================");
 			showTokens();
-			showPlayed();
+			showDeckColored(this.deckPlayedArray, "Played");
+			showDeckColored(this.deckDiscardArray, "Discarded");
 			
 			System.out.println("\nPlayer " + p.getName());
 			if (outOfClockTokens)
@@ -141,19 +135,16 @@ public class Board {
 				System.out.println("1. Give information to another player");
 			System.out.println("2. Discard a card");
 			System.out.println("3. Play a card");
-			System.out.println("4. Show discarded cards");
 			System.out.print("What do you want to do? ");
 			answer = sc.nextInt();
-			if (answer == 4)
-				showDiscard();
 			if (outOfClockTokens) {
-				if (answer < 2 || answer > 4) {
-					System.out.println("Please enter 2, 3, or 4.");
+				if (answer < 2 || answer > 3) {
+					System.out.println("Please enter 2 or 3.");
 					continueLoop = true;
 				}
 			} else {
-				if (answer < 1 || answer > 4) {
-					System.out.println("Please enter 1, 2, 3, or 4.");
+				if (answer < 1 || answer > 3) {
+					System.out.println("Please enter 1, 2, or 3.");
 					continueLoop = true;
 				}
 			}
