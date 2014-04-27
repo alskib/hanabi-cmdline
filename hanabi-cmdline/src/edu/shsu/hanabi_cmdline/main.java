@@ -18,12 +18,19 @@ public class main {
 		
 		db.connect();
 		
+		// create game by player
+		LinkedHashMap<String, String> gameinfo = new LinkedHashMap<String, String>();
+		
+		TableGame game = new TableGame(db, gameinfo);
+		createTempTable(db, game);
+		
 		Board b = new Board(5);
+		
 		//db.createTable("One", columns);
 		//db.insert("whatever", columns);
 		//db.update("update", columns, columns);
 		//db.select("something", values, columns);
-		db.dropTable("One");
+		db.dropTable(Integer.toString(game.getID()) + Integer.toString(game.getGameAdmin()));
 		db.close();
 	}
 		
