@@ -13,8 +13,12 @@ public class Board {
 	private DeckDiscard[] deckDiscardArray;
 	private Player P1, P2, P3, P4, P5, currentPlayer;
 	private Player[] playerArray;
+	//	These two Color and Number arrays are set up as such:
+	//		element 0 has the player turn in which information should be given
+	//		element 1 has the number or number representation (of the color) that
+	//			is to be given to the corresponding person
+	//		elements 2+ are the positions (1-based) of the cards in the player's hand
 	private int[] infoColorArray = null;
-	private Card[] infoCardsArray;
 	private int[] infoNumberArray = null;
 	private Tokens tokens;
 	private int currentPlayerTurn;
