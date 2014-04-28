@@ -13,9 +13,9 @@ public class Board {
 	private DeckDiscard[] deckDiscardArray;
 	private Player P1, P2, P3, P4, P5, currentPlayer;
 	private Player[] playerArray;
-	private String[] infoColorArray;
+	private int[] infoColorArray = null;
 	private Card[] infoCardsArray;
-	private int[] infoNumberArray;
+	private int[] infoNumberArray = null;
 	private Tokens tokens;
 	private int currentPlayerTurn;
 	private int numPlayers;
@@ -114,7 +114,7 @@ public class Board {
 	private void actionMenu(Player p) {
 		int answer, infoAnswer;
 		Card tempCard;
-		boolean outOfClockTokens = false;
+		boolean outOfClockTokens;
 		boolean continueLoop, infoLoop;
 		do {
 			continueLoop = false;
@@ -134,6 +134,26 @@ public class Board {
 			showTokens();
 			showDeckColored(this.deckPlayedArray, "Played");
 			showDeckColored(this.deckDiscardArray, "Discarded");
+			if (this.infoNumberArray != null) {
+				if (this.infoNumberArray[0] == this.currentPlayerTurn) {
+					System.out.println("\nYou were given information!");
+					System.out.print("Cards in position(s) ");
+					for (int i = 2; i < this.infoNumberArray.length; i++)
+						System.out.print(this.infoNumberArray[i] + " ");
+					System.out.println("have the number " + this.infoNumberArray[1]);
+					this.infoNumberArray = null;
+				}
+			}
+			if (this.infoColorArray != null) {
+				if (this.infoColorArray[0] == this.currentPlayerTurn) {
+					System.out.println("\nYou were given information!");
+					System.out.print("Cards in position(s) ");
+					for (int i = 2; i < this.infoColorArray.length; i++)
+						System.out.print(this.infoColorArray[i] + " ");
+					System.out.print("have the number " + this.infoColorArray[1]);
+					this.infoColorArray = null;
+				}
+			}
 			
 			System.out.println("\nPlayer " + p.getName());
 			if (outOfClockTokens)
@@ -215,6 +235,8 @@ public class Board {
 				} else {
 					infoLoop = false;
 				}
+				
+				//	Give number as info
 				if (infoAnswer == 1) {
 					//	Sets contain only unique entries.
 					Set<Integer> numSet = new TreeSet<Integer>();
@@ -246,12 +268,26 @@ public class Board {
 						}
 					} while (pickNumberLoop);
 					
-					//	Stack will have positions of cards
+					//	Get card positions with that number, then save number and
+					//		positions in an array to be shown at beginning of
+					//		actionMenu().
 					arr = infoPlayer.searchForElement(numAnswer);
-					int[] posArray = new int[arr.size()];
+					
+					//	posArray will store player turn number as first element,
+					//		the number of the card(s) as the info as the second,
+					//		and positions of cards with that number after that.
+					//		Therefore the array is size()+2.
+					int[] posArray = new int[arr.size()+2];
+					for (int i = 0; i < this.playerArray.length; i++) {
+						if (playerArray[i] == infoPlayer) {
+							posArray[0] = i+1;
+							break;
+						}
+					}
+					posArray[1] = numAnswer;
 //					System.out.println("arr size: " + arr.size());
-					for (int i = 0; i < arr.size(); i++) {
-						posArray[i] = arr.get(i)+1;
+					for (int i = 2; i < arr.size()+2; i++) {
+						posArray[i] = arr.get(i-2)+1;
 //						System.out.println(posArray[i]);
 					}
 					
