@@ -21,11 +21,10 @@ public class Board {
 	private int[] infoColorArray = null;
 	private int[] infoNumberArray = null;
 	private Tokens tokens;
-	private int currentPlayerTurn;
-	private int numPlayers;
+	private int currentPlayerTurn, numPlayers;
 	
 	public Board (int playerNum) {
-		this.numPlayers = playerNum;	//	numPlayers needed by other methods (possibly)
+		this.numPlayers = playerNum;	//	numPlayers used by other methods
 		initializeDecks();
 		initializePlayers(this.numPlayers);
 		this.tokens = new Tokens();
@@ -33,6 +32,7 @@ public class Board {
 		// Start of first turn.
 		this.currentPlayer = this.P1;
 		this.currentPlayerTurn = 1;
+		boolean actionMenuLoop = true; 
 		do {
 
 			actionMenu(this.currentPlayer);
@@ -77,14 +77,6 @@ public class Board {
 				this.playerArray[j].insertCard(this.drawDeck.pop());
 			}
 		}
-		
-		//	Test to see if players' hands populated correctly.
-//		for (int i = 0; i < this.playerArray.length; i++) {
-//			this.playerArray[i].iterateDeck();
-//		}
-
-
-		
 	}
 	
 	private void initializeDecks() {
@@ -120,8 +112,12 @@ public class Board {
 		Card tempCard;
 		boolean outOfClockTokens;
 		boolean continueLoop, infoLoop;
+		
+		//	Main menu loop
 		do {
 			continueLoop = false;
+			
+			//	No info giving when no clock tokens left
 			if (this.tokens.getClockTokens() == 0)
 				outOfClockTokens = true;
 			else
@@ -138,6 +134,9 @@ public class Board {
 			showTokens();
 			showDeckColored(this.deckPlayedArray, "Played");
 			showDeckColored(this.deckDiscardArray, "Discarded");
+			
+			//	Show information if there was info given and player matches
+			//	Number as info
 			if (this.infoNumberArray != null) {
 				if (this.infoNumberArray[0] == this.currentPlayerTurn) {
 					System.out.println("\nYou were given information!");
@@ -145,9 +144,9 @@ public class Board {
 					for (int i = 2; i < this.infoNumberArray.length; i++)
 						System.out.print(this.infoNumberArray[i] + " ");
 					System.out.println("have the number " + this.infoNumberArray[1]);
-					this.infoNumberArray = null;
 				}
 			}
+			//	Color as info
 			if (this.infoColorArray != null) {
 				if (this.infoColorArray[0] == this.currentPlayerTurn) {
 					System.out.println("\nYou were given information!");
@@ -166,10 +165,10 @@ public class Board {
 						case 5:	System.out.println("have the color yellow.");
 								break;
 					}
-					this.infoColorArray = null;
 				}
 			}
 			
+			//	Main menu
 			System.out.println("\nPlayer " + p.getName());
 			if (outOfClockTokens)
 				System.out.println("-- No clock tokens remain for info giving!");
@@ -192,8 +191,24 @@ public class Board {
 			}
 		} while (continueLoop);
 		
+		//	If info was given, set array to null (to show that no info is set
+		//		to be given to anyone).
+		//	The reason this is set outside the main menu loop is in case the
+		//		user makes a mistake in input. I didn't want the info to
+		//		disappear (as it's quite important).
+		if (this.infoNumberArray != null && 
+				this.infoNumberArray[0] == this.currentPlayerTurn) {
+			this.infoNumberArray = null;
+		}
+		if (this.infoColorArray != null && 
+				this.infoColorArray[0] == this.currentPlayerTurn) {
+			this.infoColorArray = null;
+		}
+		
 		//	Give info
 		if (answer == 1) {
+			//	infoPlayer will store the reference of the player that will be
+			//		given the info
 			Player infoPlayer;
 			
 			do {
@@ -237,7 +252,7 @@ public class Board {
 			
 			int numAnswer, colorAnswer;
 			ArrayList<Integer> arr;
-			
+			//	Give info loop
 			do {
 				System.out.println("");
 				System.out.println("1. Number");
@@ -310,6 +325,8 @@ public class Board {
 					
 				//	Give color as info
 				} else if (infoAnswer == 2) {
+					//	Sets contain only unique entries (same as implementation
+					//		of number)
 					Set<Integer> colorSet = new TreeSet<Integer>();
 					colorSet = infoPlayer.getColorsInHand();
 					
@@ -387,10 +404,13 @@ public class Board {
 			
 		//	Discard card
 		} else if (answer == 2) {
+			//	Remove card from player hand
 			tempCard = p.removeCard("discard");
+			//	Transfer card to discard deck
 			DeckDiscard tempDeckD = (DeckDiscard)findDeckColored(this.deckDiscardArray, tempCard);
 			tempDeckD.push(tempCard);
 			this.tokens.incClockTokens();
+			//	Draw new card
 			p.insertCard(this.drawDeck.pop());
 			
 		//	Play card
@@ -398,9 +418,13 @@ public class Board {
 			//	if playCard() false, return false for actionMenu()
 			//		which will then return for the Board game object,
 			//		quitting the game?
+			
+			//	Remove card from player hand
 			tempCard = p.removeCard("play");
+			//	Get ready to transfer to play deck (pending validity checking)
 			DeckPlayed tempDeckP = (DeckPlayed)findDeckColored(this.deckPlayedArray, tempCard);
 			
+			//	Test if card can really be played
 			if (tempDeckP.insertIntoPlayed(tempCard)){
 				System.out.println("A " + tempCard.getColor() + " " + tempCard.getNumber() +
 								   " successfully added to the fireworks!");
@@ -408,9 +432,11 @@ public class Board {
 				if (tempCard.getNumber() == 5)
 					this.tokens.incClockTokens();
 			} else {
+				//	Blew a fuse
 				System.out.println("Incorrect card played!");
 				this.tokens.decFuseTokens();
 			}
+			//	Draw new card
 			p.insertCard(this.drawDeck.pop());
 		}
 	}
