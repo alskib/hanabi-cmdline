@@ -1,6 +1,10 @@
 package edu.shsu.hanabi_cmdline;
 
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.Stack;
+import java.util.TreeSet;
 
 public class Board {
 	private Scanner sc = new Scanner(System.in);
@@ -153,6 +157,7 @@ public class Board {
 			}
 		} while (continueLoop);
 		if (answer == 1) {
+			Player infoPlayer;
 			//	give info
 			//	have player select card(s) to choose, and type of info to choose
 			//	put into list, have it shown at beginning of that player's turn
@@ -181,24 +186,110 @@ public class Board {
 				}
 			} while (infoLoop);
 			
+			
+			//	currentPlayerTurn corresponds with the current player's actual
+			//		location in the playerArray
+			//	since infoAnswer is changed (from previous loop) depending on
+			//		current player's location in the playerArray, a comparison
+			//		with currentPlayerTurn is necessary to see if the above 
+			//		was really modified
+			if (infoAnswer < this.currentPlayerTurn) {
+				infoPlayer = this.playerArray[infoAnswer-1];
+				infoPlayer.iterateDeck();
+			} else {
+				infoPlayer = this.playerArray[infoAnswer];
+				infoPlayer.iterateDeck();
+			}
+			
+			int numAnswer, colorAnswer;
+			ArrayList<Integer> arr;
+			
 			do {
-				//	currentPlayerTurn corresponds with the current player's actual
-				//		location in the playerArray
-				//	since infoAnswer is changed (from previous loop) depending on
-				//		current player's location in the playerArray, a comparison
-				//		with currentPlayerTurn is necessary to see if the above 
-				//		was really modified
-				if (infoAnswer < this.currentPlayerTurn) {
-					this.playerArray[infoAnswer-1].iterateDeck();
+				System.out.println("1. Number");
+				System.out.println("2. Color");
+				System.out.print("Which info would you like to give? ");
+				infoAnswer = sc.nextInt();
+				if (infoAnswer < 1 || infoAnswer > 2) {
+					System.out.println("Please enter 1 or 2.");
+					infoLoop = true;
+				} else {
+					infoLoop = false;
 				}
-				if (infoAnswer >= this.currentPlayerTurn) {
-					this.playerArray[infoAnswer].iterateDeck();
+				if (infoAnswer == 1) {
+					//	Sets contain only unique entries.
+					Set<Integer> numSet = new TreeSet<Integer>();
+					numSet = infoPlayer.getNumbersInHand();
+					
+					//	Convert set to array.
+					int[] validNumbers = new int[numSet.size()];
+					int index = 0;
+					for (int i : numSet) {
+						validNumbers[index++] = i;
+					}
+					
+					//	Get number to tell
+					boolean pickNumberLoop;
+					do {
+						pickNumberLoop = true;
+						for (int i = 0; i < validNumbers.length; i++) {
+							System.out.println(validNumbers[i]);
+						}
+						System.out.print("Which number? ");
+						numAnswer = sc.nextInt();
+						
+						//	Test if valid input.
+						for (int i : validNumbers) {
+							if (numAnswer == i) {
+								pickNumberLoop = false;
+								break;
+							}
+						}
+					} while (pickNumberLoop);
+					
+					//	Stack will have positions of cards
+					arr = infoPlayer.searchForElement(numAnswer);
+					int[] posArray = new int[arr.size()];
+//					System.out.println("arr size: " + arr.size());
+					for (int i = 0; i < arr.size(); i++) {
+						posArray[i] = arr.get(i)+1;
+//						System.out.println(posArray[i]);
+					}
+					
+					//	Save this position data for later
+					this.infoNumberArray = posArray;
+				} else if (infoAnswer == 2) {
+					do {
+						System.out.println("1. Blue");
+						System.out.println("2. Green");
+						System.out.println("3. Red");
+						System.out.println("4. White");
+						System.out.println("5. Yellow");
+						System.out.print("Which color? ");
+						colorAnswer = sc.nextInt();
+						if (colorAnswer < 1 || colorAnswer > 5)
+							System.out.println("Please enter a number between 1 and 5.");
+					} while (colorAnswer < 1 || colorAnswer > 5);
+					
+					switch (colorAnswer) {
+						case 1:	arr = infoPlayer.searchForElement("blue");
+								break;
+							
+						case 2:	arr = infoPlayer.searchForElement("green");
+								break;
+							
+						case 3:	arr = infoPlayer.searchForElement("red");
+								break;
+							
+						case 4:	arr = infoPlayer.searchForElement("white");
+								break;
+
+						case 5:	arr = infoPlayer.searchForElement("yellow");
+								break;
+					}
 				}
+			} while (infoLoop);
 				
-				System.out.println("Which card(s) to give info on? ");
 				
-				
-			} while (false);
 			
 			//	Show cards from person selected
 			

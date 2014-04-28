@@ -1,5 +1,10 @@
 package edu.shsu.hanabi_cmdline;
 
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.Stack;
+import java.util.TreeSet;
+
 public class DeckPlayer implements Deck {
 	private Card[] hand;
 	private int cardCount;
@@ -66,6 +71,34 @@ public class DeckPlayer implements Deck {
 			System.out.print("[" + this.hand[i].getColor() + " " + this.hand[i].getNumber() + "] ");
 		}
 		System.out.println("");
+	}
+	
+	public ArrayList<Integer> searchForElement(int num) {
+		ArrayList<Integer> arr = new ArrayList<Integer>();
+		for (int i = 0; i < getDeckSize(); i++) {
+			if (this.hand[i].getNumber() == num) {
+				arr.add(i);
+			}
+		}
+		return arr;
+	}
+	
+	public ArrayList<Integer> searchForElement(String color) {
+		ArrayList<Integer> arr = new ArrayList<Integer>();
+		for (int i = 0; i < getDeckSize(); i++) {
+			if (this.hand[i].getColor().equals(color)) {
+				arr.add(i);
+			}
+		}
+		return arr;
+	}
+	
+	public Set<Integer> getNumbersInHand () {
+		Set<Integer> numArray = new TreeSet<Integer>();
+		for (int i = 0; i < this.hand.length; i++) {
+			numArray.add(this.hand[i].getNumber());
+		}
+		return numArray;
 	}
 	
 	//	Get number as info

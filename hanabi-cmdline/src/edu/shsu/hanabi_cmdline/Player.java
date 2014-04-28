@@ -1,6 +1,9 @@
 package edu.shsu.hanabi_cmdline;
 
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.Stack;
 
 public class Player {
 	private int id;
@@ -29,17 +32,16 @@ public class Player {
 		this.hand.iterateDeck(this.name);
 	}
 	
-	public void gatherInfoToTell() {
-		
+	public ArrayList<Integer> searchForElement(int num) {
+		return this.hand.searchForElement(num);
 	}
 	
-	public int[] tellInfo(int[] pos) {
-		
-		return null;
+	public Set<Integer> getNumbersInHand() {
+		return this.hand.getNumbersInHand();
 	}
 	
-	public void tellInfo(String color, int[] pos) {
-		
+	public ArrayList<Integer> searchForElement (String color) {
+		return this.hand.searchForElement(color);
 	}
 	
 	public void setID(int id) {
