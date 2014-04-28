@@ -40,6 +40,10 @@ public class Player {
 		return this.hand.getNumbersInHand();
 	}
 	
+	public Set<Integer> getColorsInHand() {
+		return this.hand.getColorsInHand();
+	}
+	
 	public ArrayList<Integer> searchForElement (String color) {
 		return this.hand.searchForElement(color);
 	}

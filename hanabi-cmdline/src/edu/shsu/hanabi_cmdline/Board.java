@@ -130,8 +130,8 @@ public class Board {
 			System.out.println("==============================");
 			for (int i = 0; i < this.playerArray.length; i++) {
 				//	Skip loop if i matches current player
-//				if (i == this.currentPlayerTurn-1)
-//					continue;
+				if (i == this.currentPlayerTurn-1)
+					continue;
 				this.playerArray[i].iterateDeck();
 			}
 			System.out.println("==============================");
@@ -154,7 +154,18 @@ public class Board {
 					System.out.print("Cards in position(s) ");
 					for (int i = 2; i < this.infoColorArray.length; i++)
 						System.out.print(this.infoColorArray[i] + " ");
-					System.out.print("have the number " + this.infoColorArray[1]);
+					switch(this.infoColorArray[1]) {
+						case 1:	System.out.println("have the color blue.");
+								break;
+						case 2:	System.out.println("have the color green.");
+								break;
+						case 3:	System.out.println("have the color red.");
+								break;
+						case 4:	System.out.println("have the color white.");
+								break;
+						case 5:	System.out.println("have the color yellow.");
+								break;
+					}
 					this.infoColorArray = null;
 				}
 			}
@@ -180,16 +191,16 @@ public class Board {
 				}
 			}
 		} while (continueLoop);
+		
+		//	Give info
 		if (answer == 1) {
 			Player infoPlayer;
-			//	give info
-			//	have player select card(s) to choose, and type of info to choose
-			//	put into list, have it shown at beginning of that player's turn
-			//	it will be a list per person, with a list on each line
+			
 			do {
 				infoLoop = false;
 				
 				boolean found = false;
+				System.out.println("");
 				for (int i = 0; i < this.playerArray.length; i++) {
 					String name = this.playerArray[i].getName();
 					if (name.equals(p.getName())) {	//	Ignore printout for current player
@@ -210,7 +221,6 @@ public class Board {
 				}
 			} while (infoLoop);
 			
-			
 			//	currentPlayerTurn corresponds with the current player's actual
 			//		location in the playerArray
 			//	since infoAnswer is changed (from previous loop) depending on
@@ -229,6 +239,7 @@ public class Board {
 			ArrayList<Integer> arr;
 			
 			do {
+				System.out.println("");
 				System.out.println("1. Number");
 				System.out.println("2. Color");
 				System.out.print("Which info would you like to give? ");
@@ -257,6 +268,7 @@ public class Board {
 					boolean pickNumberLoop;
 					do {
 						pickNumberLoop = true;
+						System.out.println("");
 						for (int i = 0; i < validNumbers.length; i++) {
 							System.out.println(validNumbers[i]);
 						}
@@ -289,27 +301,52 @@ public class Board {
 						}
 					}
 					posArray[1] = numAnswer;
-//					System.out.println("arr size: " + arr.size());
 					for (int i = 2; i < arr.size()+2; i++) {
 						posArray[i] = arr.get(i-2)+1;
-//						System.out.println(posArray[i]);
 					}
 					
 					//	Save this position data for later
 					this.infoNumberArray = posArray;
+					
+				//	Give color as info
 				} else if (infoAnswer == 2) {
+					Set<Integer> colorSet = new TreeSet<Integer>();
+					colorSet = infoPlayer.getColorsInHand();
+					
+					int[] validColors = new int[colorSet.size()];
+					int index = 0;
+					for (int i : colorSet) {
+						validColors[index++] = i;
+					}
+					
+					boolean pickColorLoop;
 					do {
-						System.out.println("1. Blue");
-						System.out.println("2. Green");
-						System.out.println("3. Red");
-						System.out.println("4. White");
-						System.out.println("5. Yellow");
+						pickColorLoop = true;
+						System.out.println("");
+						for (int i = 0; i < validColors.length; i++) {
+							switch(validColors[i]) {
+								case 1:	System.out.println("1. Blue");
+										break;
+								case 2:	System.out.println("2. Green");
+										break;
+								case 3:	System.out.println("3. Red");
+										break;
+								case 4:	System.out.println("4. White");
+										break;
+								case 5:	System.out.println("5. Yellow");
+										break;
+							}
+						}
 						System.out.print("Which color? ");
 						colorAnswer = sc.nextInt();
-						if (colorAnswer < 1 || colorAnswer > 5)
-							System.out.println("Please enter a number between 1 and 5.");
-					} while (colorAnswer < 1 || colorAnswer > 5);
+						for (int i : validColors)
+							if (colorAnswer == i) {
+								pickColorLoop = false;
+								break;
+							}
+					} while (pickColorLoop);
 					
+					//	Translate the color integer to actual string color.
 					switch (colorAnswer) {
 						case 1:	arr = infoPlayer.searchForElement("blue");
 								break;
@@ -325,34 +362,39 @@ public class Board {
 
 						case 5:	arr = infoPlayer.searchForElement("yellow");
 								break;
+						default:	arr = null;
+									break;
 					}
+					
+					int[] posArray = new int[arr.size()+2];
+					for (int i = 0; i < this.playerArray.length; i++) {
+						if (playerArray[i] == infoPlayer) {
+							posArray[0] = i+1;
+							break;
+						}
+					}
+					posArray[1] = colorAnswer;
+					for (int i = 2; i < arr.size()+2; i++) {
+						posArray[i] = arr.get(i-2)+1;
+					}
+					
+					//	Save this position data for later
+					this.infoColorArray = posArray;
 				}
 			} while (infoLoop);
-				
-				
-			
-			//	Show cards from person selected
-			
-			
-			//	Select cards from person
-			
-			
-			//	Number or color?
-			
-			
-			//	Error checking
-			
 			
 			this.tokens.decClockTokens();
+			
+		//	Discard card
 		} else if (answer == 2) {
-			//	discard card
 			tempCard = p.removeCard("discard");
 			DeckDiscard tempDeckD = (DeckDiscard)findDeckColored(this.deckDiscardArray, tempCard);
 			tempDeckD.push(tempCard);
 			this.tokens.incClockTokens();
 			p.insertCard(this.drawDeck.pop());
+			
+		//	Play card
 		} else if (answer == 3) {
-			//	play card
 			//	if playCard() false, return false for actionMenu()
 			//		which will then return for the Board game object,
 			//		quitting the game?

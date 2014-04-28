@@ -93,12 +93,31 @@ public class DeckPlayer implements Deck {
 		return arr;
 	}
 	
-	public Set<Integer> getNumbersInHand () {
+	public Set<Integer> getNumbersInHand() {
 		Set<Integer> numArray = new TreeSet<Integer>();
 		for (int i = 0; i < this.hand.length; i++) {
 			numArray.add(this.hand[i].getNumber());
 		}
 		return numArray;
+	}
+	
+	public Set<Integer> getColorsInHand() {
+		Set<Integer> colorArray = new TreeSet<Integer>();
+		for (int i = 0; i < this.hand.length; i++) {
+			switch(this.hand[i].getColor()) {
+				case "blue":	colorArray.add(1);
+								break;
+				case "green":	colorArray.add(2);
+								break;
+				case "red":		colorArray.add(3);
+								break;
+				case "white":	colorArray.add(4);
+								break;
+				case "yellow":	colorArray.add(5);
+								break;
+			}
+		}
+		return colorArray;
 	}
 	
 	//	Get number as info

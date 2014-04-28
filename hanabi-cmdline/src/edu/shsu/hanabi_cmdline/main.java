@@ -18,7 +18,7 @@ public class main {
 		
 		db.connect();
 		
-		Board b = new Board(4);
+		Board b = new Board(5);
 
 		// create game by player
 		LinkedHashMap<String, String> gameinfo = new LinkedHashMap<String, String>();
