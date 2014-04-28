@@ -18,7 +18,6 @@ public class main {
 		
 		db.connect();
 		
-
 		Board b = new Board(4);
 
 		// create game by player
