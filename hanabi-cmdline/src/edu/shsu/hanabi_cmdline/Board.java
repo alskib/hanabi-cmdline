@@ -18,8 +18,14 @@ public class Board {
 	//		element 1 has the number or number representation (of the color) that
 	//			is to be given to the corresponding person
 	//		elements 2+ are the positions (1-based) of the cards in the player's hand
+	
+	public enum InfoType {
+		NUMBER,
+		COLOR
+	}
 	private int[] infoColorArray = null;
 	private int[] infoNumberArray = null;
+	private ArrayList<Info> infoList = new ArrayList<Info>();
 	private Tokens tokens;
 	private int currentPlayerTurn, numPlayers;
 	
@@ -112,6 +118,7 @@ public class Board {
 		Card tempCard;
 		boolean outOfClockTokens;
 		boolean continueLoop, infoLoop;
+		Info tempInfo;
 		
 		//	Main menu loop
 		do {
@@ -137,33 +144,20 @@ public class Board {
 			
 			//	Show information if there was info given and player matches
 			//	Number as info
-			if (this.infoNumberArray != null) {
-				if (this.infoNumberArray[0] == this.currentPlayerTurn) {
-					System.out.println("\nYou were given information!");
-					System.out.print("Cards in position(s) ");
-					for (int i = 2; i < this.infoNumberArray.length; i++)
-						System.out.print(this.infoNumberArray[i] + " ");
-					System.out.println("have the number " + this.infoNumberArray[1]);
-				}
-			}
-			//	Color as info
-			if (this.infoColorArray != null) {
-				if (this.infoColorArray[0] == this.currentPlayerTurn) {
-					System.out.println("\nYou were given information!");
-					System.out.print("Cards in position(s) ");
-					for (int i = 2; i < this.infoColorArray.length; i++)
-						System.out.print(this.infoColorArray[i] + " ");
-					switch(this.infoColorArray[1]) {
-						case 1:	System.out.println("have the color blue.");
-								break;
-						case 2:	System.out.println("have the color green.");
-								break;
-						case 3:	System.out.println("have the color red.");
-								break;
-						case 4:	System.out.println("have the color white.");
-								break;
-						case 5:	System.out.println("have the color yellow.");
-								break;
+			if (!this.infoList.isEmpty()) {
+				for (int i = 0; i < infoList.size(); i++) {
+					if (infoList.get(i).getPlayerTurn() == this.currentPlayerTurn) {
+						tempInfo = infoList.get(i);
+						System.out.println("\nYou were given information!");
+						System.out.print("Cards in position(s) ");
+						tempInfo.iterateData();
+						if (tempInfo.getInfoType().equals(InfoType.NUMBER)) {
+							System.out.println("have the number " + tempInfo.getInfoAnswer());
+						}
+						if (tempInfo.getInfoType().equals(InfoType.COLOR)) {
+							System.out.println("have the color " + tempInfo.getInfoAnswer());
+						}
+						tempInfo.setForRemoval();
 					}
 				}
 			}
@@ -196,13 +190,11 @@ public class Board {
 		//	The reason this is set outside the main menu loop is in case the
 		//		user makes a mistake in input. I didn't want the info to
 		//		disappear (as it's quite important).
-		if (this.infoNumberArray != null && 
-				this.infoNumberArray[0] == this.currentPlayerTurn) {
-			this.infoNumberArray = null;
-		}
-		if (this.infoColorArray != null && 
-				this.infoColorArray[0] == this.currentPlayerTurn) {
-			this.infoColorArray = null;
+		if (!infoList.isEmpty()) {
+			for (int i = 0; i < infoList.size(); i++) {
+				if (infoList.get(i).removeStatus())
+					infoList.remove(i);
+			}
 		}
 		
 		//	Give info
@@ -252,6 +244,7 @@ public class Board {
 			
 			int numAnswer, colorAnswer;
 			ArrayList<Integer> arr;
+			Info info;
 			//	Give info loop
 			do {
 				System.out.println("");
@@ -303,25 +296,31 @@ public class Board {
 					//		positions in an array to be shown at beginning of
 					//		actionMenu().
 					arr = infoPlayer.searchForElement(numAnswer);
+					info = new Info(InfoType.NUMBER);
 					
 					//	posArray will store player turn number as first element,
 					//		the number of the card(s) as the info as the second,
 					//		and positions of cards with that number after that.
 					//		Therefore the array is size()+2.
-					int[] posArray = new int[arr.size()+2];
+					int[] posArray = new int[arr.size()];
+					//	Find position of infoPlayer in playerArray, and then
+					//		+1 to that value to get the proper player turn number.
 					for (int i = 0; i < this.playerArray.length; i++) {
 						if (playerArray[i] == infoPlayer) {
-							posArray[0] = i+1;
+//							posArray[0] = i+1;
+							info.setPlayerTurn(i+1);
 							break;
 						}
 					}
-					posArray[1] = numAnswer;
-					for (int i = 2; i < arr.size()+2; i++) {
-						posArray[i] = arr.get(i-2)+1;
+//					posArray[1] = numAnswer;
+					info.setInfoAnswer(numAnswer);
+					for (int i = 0; i < arr.size(); i++) {
+						posArray[i] = arr.get(i)+1;
 					}
-					
+					info.insertData(posArray);
 					//	Save this position data for later
-					this.infoNumberArray = posArray;
+//					this.infoNumberArray = posArray;
+					this.infoList.add(info);
 					
 				//	Give color as info
 				} else if (infoAnswer == 2) {
@@ -382,21 +381,24 @@ public class Board {
 						default:	arr = null;
 									break;
 					}
-					
-					int[] posArray = new int[arr.size()+2];
+					info = new Info(InfoType.COLOR);
+					int[] posArray = new int[arr.size()];
 					for (int i = 0; i < this.playerArray.length; i++) {
 						if (playerArray[i] == infoPlayer) {
-							posArray[0] = i+1;
+//							posArray[0] = i+1;
+							info.setPlayerTurn(i+1);
 							break;
 						}
 					}
-					posArray[1] = colorAnswer;
-					for (int i = 2; i < arr.size()+2; i++) {
-						posArray[i] = arr.get(i-2)+1;
+//					posArray[1] = colorAnswer;
+					info.setInfoAnswer(colorAnswer);
+					for (int i = 0; i < arr.size(); i++) {
+						posArray[i] = arr.get(i)+1;
 					}
 					
 					//	Save this position data for later
-					this.infoColorArray = posArray;
+//					this.infoColorArray = posArray;
+					this.infoList.add(info);
 				}
 			} while (infoLoop);
 			
