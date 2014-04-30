@@ -110,6 +110,7 @@ public class Board {
 		boolean outOfClockTokens;
 		boolean continueLoop, infoLoop;
 		Info tempInfo;
+		clearScreen();
 		
 		//	Main menu loop
 		do {
@@ -124,8 +125,8 @@ public class Board {
 			System.out.println("==============================");
 			for (int i = 0; i < this.playerArray.length; i++) {
 				//	Skip loop if i matches current player
-//				if (i == this.currentPlayerTurn-1)
-//					continue;
+				if (i == this.currentPlayerTurn-1)
+					continue;
 				this.playerArray[i].iterateDeck();
 			}
 			System.out.println("==============================");
