@@ -124,8 +124,8 @@ public class Board {
 			System.out.println("==============================");
 			for (int i = 0; i < this.playerArray.length; i++) {
 				//	Skip loop if i matches current player
-				if (i == this.currentPlayerTurn-1)
-					continue;
+//				if (i == this.currentPlayerTurn-1)
+//					continue;
 				this.playerArray[i].iterateDeck();
 			}
 			System.out.println("==============================");
@@ -146,7 +146,19 @@ public class Board {
 							System.out.println("have the number " + tempInfo.getInfoAnswer());
 						}
 						if (tempInfo.getInfoType().equals(InfoType.COLOR)) {
-							System.out.println("have the color " + tempInfo.getInfoAnswer());
+							System.out.print("have the color ");
+							switch(tempInfo.getInfoAnswer()) {
+								case 1:	System.out.println("blue!");
+										break;
+								case 2:	System.out.println("green!");
+										break;
+								case 3:	System.out.println("red!");
+										break;
+								case 4:	System.out.println("white!");
+										break;
+								case 5:	System.out.println("yellow!");
+										break;
+							}
 						}
 						//	Removal will be checked after this loop
 						tempInfo.setForRemoval();
@@ -381,6 +393,7 @@ public class Board {
 						posArray[i] = arr.get(i)+1;
 					}
 					
+					info.insertData(posArray);
 					//	Save this position data for later
 					this.infoList.add(info);
 				}
@@ -420,6 +433,8 @@ public class Board {
 			} else {
 				//	Blew a fuse
 				System.out.println("Incorrect card played!");
+				DeckDiscard tempDeckD = (DeckDiscard)findDeckColored(this.deckDiscardArray, tempCard);
+				tempDeckD.push(tempCard);
 				this.tokens.decFuseTokens();
 			}
 			//	Draw new card
@@ -476,6 +491,12 @@ public class Board {
 		if (this.currentPlayerTurn == 5) {	// 	Max 5 player game, have to go back to P1.
 			this.currentPlayer = this.P1;
 			this.currentPlayerTurn = 1;
+		}
+	}
+	
+	public void clearScreen() {
+		for (int i = 0; i < 50; i++) {
+			System.out.println("");
 		}
 	}
 }

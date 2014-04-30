@@ -44,7 +44,7 @@ public class Info {
 	//	Show data to player
 	public void iterateData() {
 		for (int i : this.infoData)
-			System.out.print(i + " ");
+				System.out.print(i + " ");
 	}
 	
 	public void setForRemoval() {
