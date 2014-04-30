@@ -14,6 +14,9 @@ public class DeckPlayed implements DeckColored {
 		this.deckSize = size;
 	}
 	
+	public int getCardCount() {
+		return this.cardCount;
+	}
 	public void iterateDeck() {
 		if (isEmpty())
 			return;
@@ -70,7 +73,8 @@ public class DeckPlayed implements DeckColored {
 				return false;
 		}
 
-		if (this.cards[cardNumber-2].getNumber() == cardNumber-1) {
+		if (this.cards[cardNumber-2] != null && 
+				this.cards[cardNumber-2].getNumber() == cardNumber-1) {
 			push(c);
 			return true;
 		}

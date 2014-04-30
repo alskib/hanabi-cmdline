@@ -1,6 +1,7 @@
 package edu.shsu.hanabi_cmdline;
 
 import java.util.LinkedHashMap;
+import java.util.Scanner;
 
 import edu.shsu.hanabi_cmdline.database.Database;
 import edu.shsu.hanabi_cmdline.database.TableGame;
@@ -17,22 +18,17 @@ public class main {
 		columns.put("some", "2");
 		
 		db.connect();
-		
-		Board b = new Board(5);
+		Scanner sc = new Scanner(System.in);
+		int playerNum;
+		do {
+			System.out.print("How many players (2-5)? ");
+			playerNum = sc.nextInt();
+			if (playerNum > 1 && playerNum < 6) {
+				Board b = new Board(playerNum);
+			} else
+				System.out.println("Hanabi only supports 2 to 5 players.");
+		} while (playerNum < 1 || playerNum > 5);
 
-		// create game by player
-		LinkedHashMap<String, String> gameinfo = new LinkedHashMap<String, String>();
-		
-		TableGame game = new TableGame(db, gameinfo);
-		createTempTable(db, game);
-		
-
-		//db.createTable("One", columns);
-		//db.insert("whatever", columns);
-		//db.update("update", columns, columns);
-		//db.select("something", values, columns);
-		db.dropTable(Integer.toString(game.getID()) + Integer.toString(game.getGameAdmin()));
-		db.close();
 	}
 		
 	public static void createTempTable(Database db, TableGame game){

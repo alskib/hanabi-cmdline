@@ -1,5 +1,6 @@
 package edu.shsu.hanabi_cmdline;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Set;
@@ -31,14 +32,21 @@ public class Board {
 		// Start of first turn.
 		this.currentPlayer = this.P1;
 		this.currentPlayerTurn = 1;
-		boolean actionMenuLoop = true; 
+		boolean actionMenuLoop = true;
+		boolean successfulTurn = true;
 		do {
 
-			actionMenu(this.currentPlayer);
-			nextTurn();
-			//	TODO: Implement win/loss conditions
+			if (!actionMenu(this.currentPlayer)) {
+				successfulTurn = false;
+			} else {
+				nextTurn();
+			}
+			
+			//	TODO: Implement win conditions
 
-		} while (true);
+		} while (successfulTurn);
+		System.out.println("\nYou blew all the fuses!");
+		displayScore();
 	}
 	
 	private void initializePlayers(int playerNum) {
@@ -104,7 +112,7 @@ public class Board {
 						  this.tokens.getClockTokens(), this.tokens.getFuseTokens());
 	}
 	
-	private void actionMenu(Player p) {
+	private boolean actionMenu(Player p) {
 		int answer, infoAnswer;
 		Card tempCard;
 		boolean outOfClockTokens;
@@ -401,6 +409,7 @@ public class Board {
 			} while (infoLoop);
 			
 			this.tokens.decClockTokens();
+			return true;
 			
 		//	Discard card
 		} else if (answer == 2) {
@@ -412,6 +421,7 @@ public class Board {
 			this.tokens.incClockTokens();
 			//	Draw new card
 			p.insertCard(this.drawDeck.pop());
+			return true;
 			
 		//	Play card
 		} else if (answer == 3) {
@@ -431,16 +441,26 @@ public class Board {
 				//	Successful 5 card gets a clock token.
 				if (tempCard.getNumber() == 5)
 					this.tokens.incClockTokens();
+				waitForInput();
 			} else {
 				//	Blew a fuse
-				System.out.println("Incorrect card played!");
+				System.out.print("Incorrect card played!");
+				System.out.print(" [" + tempCard.getColor() + " ");
+				System.out.println(tempCard.getNumber() + "]");
 				DeckDiscard tempDeckD = (DeckDiscard)findDeckColored(this.deckDiscardArray, tempCard);
 				tempDeckD.push(tempCard);
-				this.tokens.decFuseTokens();
+				
+				//	If cannot decrement further (ran out of fuses), game ends
+				if(this.tokens.decFuseTokens()) {
+					return false;
+				}
+				waitForInput();
 			}
 			//	Draw new card
 			p.insertCard(this.drawDeck.pop());
+			return true;
 		}
+		return true;
 	}
 	
 	private DeckColored findDeckColored(DeckColored[] array, Card c) {
@@ -498,6 +518,35 @@ public class Board {
 	public void clearScreen() {
 		for (int i = 0; i < 50; i++) {
 			System.out.println("");
+		}
+	}
+	
+	public void waitForInput() {
+		try {
+			System.in.read();
+		} catch (IOException e) {}
+	}
+	
+	private void displayScore() {
+		System.out.print("Final score: ");
+		int scoreSum = 0;
+		for (int i = 0; i < deckPlayedArray.length; i++) {
+			scoreSum += deckPlayedArray[i].getCardCount();
+		}
+		System.out.println(scoreSum);
+		System.out.print("Overall impression: ");
+		if (scoreSum <= 5) {
+			System.out.println("Horrible - booed by the crowd.");
+		} else if (scoreSum <= 10) {
+			System.out.println("Mediocre - just a hit of scattered applause.");
+		} else if (scoreSum <= 15) {
+			System.out.println("Honorable attempt, but quickly forgotten.");
+		} else if (scoreSum <= 20) {
+			System.out.println("Excellent - crowd pleasing.");
+		} else if (scoreSum <= 24) {
+			System.out.println("Amazing - they will be talking about it for weeks!");
+		} else {
+			System.out.println("Legendary - everyone left speechless, stars in theier eyes!");
 		}
 	}
 }
