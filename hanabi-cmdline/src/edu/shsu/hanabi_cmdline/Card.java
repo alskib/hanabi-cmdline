@@ -3,6 +3,7 @@ package edu.shsu.hanabi_cmdline;
 public class Card {
 	private String color;
 	private int number;
+	//	Players can set orientation (for the GUI) of the card
 	private String orientation;
 	
 	public Card (int num, String c) {

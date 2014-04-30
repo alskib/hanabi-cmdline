@@ -4,6 +4,7 @@ public class Tokens {
 	private int clockTokens;
 	private int fuseTokens;
 	
+	//	Tokens used to allow or limit player actions
 	public Tokens() {
 		this.clockTokens = 8;
 		this.fuseTokens = 3;
@@ -27,9 +28,11 @@ public class Tokens {
 			this.clockTokens--;
 	}
 	
-	public boolean decFuseTokens() {	//	If only 1 fuse token left, and there needs a decrement,
-		if (this.fuseTokens > 1) {		//		it means the players lose. No point in actually
-			this.fuseTokens--;			//		decrementing.
+	//	If only 1 fuse token left, and there needs a decrement, it means the
+	//		players lose. No point in actually decrementing.
+	public boolean decFuseTokens() {	
+		if (this.fuseTokens > 1) {		
+			this.fuseTokens--;			
 			return false;
 		}
 		return true;

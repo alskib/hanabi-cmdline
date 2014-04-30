@@ -3,7 +3,6 @@ package edu.shsu.hanabi_cmdline;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.Stack;
 
 public class Player {
 	private int id;
@@ -13,6 +12,7 @@ public class Player {
 	private DeckPlayer hand;
 	Scanner sc = new Scanner(System.in); 
 	
+	//	Player in the game
 	public Player(String name, int size) {
 		this.name = name;
 		hand = new DeckPlayer(size);

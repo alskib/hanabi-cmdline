@@ -6,6 +6,7 @@ public class DeckDiscard implements DeckColored {
 	private int cardCount;
 	private int deckSize;
 	
+	//	Deck of discarded cards
 	public DeckDiscard(int size, String c) {
 		this.cards = new Card[size];
 		this.color = c;

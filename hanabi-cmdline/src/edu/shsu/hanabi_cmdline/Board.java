@@ -3,7 +3,6 @@ package edu.shsu.hanabi_cmdline;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.Stack;
 import java.util.TreeSet;
 
 public class Board {
@@ -13,18 +12,12 @@ public class Board {
 	private DeckDiscard[] deckDiscardArray;
 	private Player P1, P2, P3, P4, P5, currentPlayer;
 	private Player[] playerArray;
-	//	These two Color and Number arrays are set up as such:
-	//		element 0 has the player turn in which information should be given
-	//		element 1 has the number or number representation (of the color) that
-	//			is to be given to the corresponding person
-	//		elements 2+ are the positions (1-based) of the cards in the player's hand
-	
+
 	public enum InfoType {
 		NUMBER,
 		COLOR
 	}
-	private int[] infoColorArray = null;
-	private int[] infoNumberArray = null;
+
 	private ArrayList<Info> infoList = new ArrayList<Info>();
 	private Tokens tokens;
 	private int currentPlayerTurn, numPlayers;
@@ -43,11 +36,9 @@ public class Board {
 
 			actionMenu(this.currentPlayer);
 			nextTurn();
+			//	TODO: Implement win/loss conditions
 
 		} while (true);
-		
-		
-		
 	}
 	
 	private void initializePlayers(int playerNum) {
@@ -157,6 +148,7 @@ public class Board {
 						if (tempInfo.getInfoType().equals(InfoType.COLOR)) {
 							System.out.println("have the color " + tempInfo.getInfoAnswer());
 						}
+						//	Removal will be checked after this loop
 						tempInfo.setForRemoval();
 					}
 				}
@@ -185,8 +177,6 @@ public class Board {
 			}
 		} while (continueLoop);
 		
-		//	If info was given, set array to null (to show that no info is set
-		//		to be given to anyone).
 		//	The reason this is set outside the main menu loop is in case the
 		//		user makes a mistake in input. I didn't want the info to
 		//		disappear (as it's quite important).
@@ -307,19 +297,16 @@ public class Board {
 					//		+1 to that value to get the proper player turn number.
 					for (int i = 0; i < this.playerArray.length; i++) {
 						if (playerArray[i] == infoPlayer) {
-//							posArray[0] = i+1;
 							info.setPlayerTurn(i+1);
 							break;
 						}
 					}
-//					posArray[1] = numAnswer;
 					info.setInfoAnswer(numAnswer);
 					for (int i = 0; i < arr.size(); i++) {
 						posArray[i] = arr.get(i)+1;
 					}
 					info.insertData(posArray);
 					//	Save this position data for later
-//					this.infoNumberArray = posArray;
 					this.infoList.add(info);
 					
 				//	Give color as info
@@ -385,19 +372,16 @@ public class Board {
 					int[] posArray = new int[arr.size()];
 					for (int i = 0; i < this.playerArray.length; i++) {
 						if (playerArray[i] == infoPlayer) {
-//							posArray[0] = i+1;
 							info.setPlayerTurn(i+1);
 							break;
 						}
 					}
-//					posArray[1] = colorAnswer;
 					info.setInfoAnswer(colorAnswer);
 					for (int i = 0; i < arr.size(); i++) {
 						posArray[i] = arr.get(i)+1;
 					}
 					
 					//	Save this position data for later
-//					this.infoColorArray = posArray;
 					this.infoList.add(info);
 				}
 			} while (infoLoop);

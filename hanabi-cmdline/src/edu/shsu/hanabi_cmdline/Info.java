@@ -9,11 +9,13 @@ public class Info {
 	private int[] infoData;
 	boolean remove;
 	
+	//	Structure for saving info (number or color) given by another player
 	public Info (InfoType type) {
 		this.infoType = type;
 		this.remove = false;
 	}
 	
+	//	Enumerated to InfoType.NUMBER and InfoType.COLOR
 	public InfoType getInfoType() {
 		return this.infoType;
 	}
@@ -34,10 +36,12 @@ public class Info {
 		this.infoAnswer = a;
 	}
 	
+	//	Position data for cards
 	public void insertData(int[] data) {
 		this.infoData = data;
 	}
 	
+	//	Show data to player
 	public void iterateData() {
 		for (int i : this.infoData)
 			System.out.print(i + " ");
@@ -47,6 +51,8 @@ public class Info {
 		this.remove = true;
 	}
 	
+	//	Check if Info is set for removal (after being shown to designated
+	//		player)
 	public boolean removeStatus() {
 		return this.remove;
 	}

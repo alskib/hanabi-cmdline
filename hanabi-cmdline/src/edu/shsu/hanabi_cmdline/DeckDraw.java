@@ -7,6 +7,7 @@ public class DeckDraw implements Deck {
 	private int cardCount;
 	private int deckSize;
 	
+	//	Deck of cards to be drawn by players
 	public DeckDraw(int size) {
 		this.cards = new Card[size];
 		this.cardCount = 0;
@@ -23,6 +24,12 @@ public class DeckDraw implements Deck {
 		initializeColor("yellow");
 	}
 	
+	//	For each color, and the number (1 to 5) in each color, there is of quantity:
+	//		number 1:	3 cards
+	//		number 2:	2 cards
+	//		number 3:	2 cards
+	//		number 4:	2 cards
+	//		number 5:	1 cards
 	private void initializeColor(String color) {
 		int tempCount = cardCount;
 		for (int i = cardCount; i < tempCount+3; i++) {
@@ -92,7 +99,4 @@ public class DeckDraw implements Deck {
 			return true;
 		return false;
 	}
-	
-	
-
 }

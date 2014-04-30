@@ -7,7 +7,7 @@ public class Game {
 	private boolean prvtGame;
 	
 	public Game() {
-		
+		//	To be implemented with database
 	}
 	
 	public void setID(int id) {

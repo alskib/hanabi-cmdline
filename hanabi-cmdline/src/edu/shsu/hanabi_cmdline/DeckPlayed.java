@@ -6,12 +6,12 @@ public class DeckPlayed implements DeckColored {
 	private int cardCount;
 	private int deckSize;
 	
+	//	Deck of played cards (cards successfully added to fireworks)
 	public DeckPlayed(int size, String c) {
 		this.cards = new Card[size];
 		this.color = c;
 		this.cardCount = 0;
 		this.deckSize = size;
-		
 	}
 	
 	public void iterateDeck() {
@@ -49,7 +49,6 @@ public class DeckPlayed implements DeckColored {
 	}
 	
 	public boolean insertIntoPlayed(Card c) {
-//	public boolean push(Card c) {
 		//	Since the played deck can only be built in a specific order (1 to 5),
 		//		if the player is attempting to play a 3, I only have to test if
 		//		position cards[1] contains a card of number 2.
